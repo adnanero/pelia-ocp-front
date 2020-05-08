@@ -13,7 +13,6 @@ router.post('/login' , [
   ], VideoCallController.auth);
 
 router.post('/video-call/patient', VideoCallController.authPatient);
-router.post('/suggestion', VideoCallController.suggestion);
 
 
 module.exports = router;

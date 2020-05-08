@@ -21,10 +21,11 @@
     "react-router-dom": "^5.1.2",
     "react-script": "^2.0.5",
     "react-scripts": "3.4.1",
+    "react-transition-group": "^4.3.0",
     "react-vertical-timeline-component": "^2.5.0",
     "react-videojs-fancybox": "0.0.7",
     "simple-peer": "^9.6.2",
-    "websocket": "^1.0.31",
+    "socket.io-client": "^2.3.0",
     "wow.js": "^1.2.2"
   },
   "scripts": {

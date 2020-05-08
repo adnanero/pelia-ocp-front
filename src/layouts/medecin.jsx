@@ -4,7 +4,7 @@ import {Navbar, Nav, Button, Row, Col} from 'react-bootstrap'
 import Cookies from 'js-cookie'
 import {Link, Redirect } from "react-router-dom";
 import Logo from './../components/logo'
-
+import Chat from './../views/chatMedecin'
 import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
 
 import {TiMessages} from 'react-icons/ti'
@@ -19,28 +19,29 @@ import {
 
 
 import Call from './../components/videochat/app'
-export default class medecin extends Component {
-    render() {
-        let isPatient = (this.props.match.params.name === undefined) ? false : true;
+const Medecin = (props) =>  {
+   
+        let isPatient = (props.match.params.name === undefined) ? false : true;
         if( !isPatient && !Cookies.get('medecinAuth') === undefined ){
             return (<Redirect to="/authentification" />)
           }
         return (
             <div>
-                <Header {...this.props} />
+                <Header {...props} />
                 <main id="medecin-site" className="medecin-site">
             <Switch>
                 <Route exact path="/call-video" render={props => <Call {...props} />} />
-                {/* <Route exact path="/call-video/:name" render={props => <Call {...props} />} /> */}
                 <Route exact path="/profil/home" render={props => <Comment {...props} />} />
                 <Route exact path="/profil/contact" render={props => <Contact {...props} />} />
+                <Route exact path="/profil/chat" render={props => <Chat {...props} />} />
+                
             </Switch> 
         </main>
             </div>
         )
-    }
+    
 }
-
+export default Medecin;
 
 function Header(props){
     const [isToggle, setIsToggled] = useState(false)
@@ -54,7 +55,8 @@ function Header(props){
         }, 1000);
         
     }
-    if(isLogout){
+    
+    if(isLogout || Cookies.get('user') === undefined){
         return <Redirect to="/" />
 
     }   
@@ -77,7 +79,7 @@ function Header(props){
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav activeKey={props.location.pathname} as="ul" className="nav menu_nav" >
                             <Nav.Item as="li"><Nav.Link as={Link} href='/profil/home' to="/profil/home"> Comment ça marche ?</Nav.Link></Nav.Item>
-                            <Nav.Item as="li"><Nav.Link as={Link} href='/call-video' to="/call-video">appeler un patient</Nav.Link></Nav.Item>
+                            <Nav.Item as="li"><Nav.Link as={Link} href='/profil/chat' to="/profil/chat">téléconsultation</Nav.Link></Nav.Item>
                             <Nav.Item as="li"><Nav.Link as={Link} href='/profil/contact' to="/profil/contact">contactez-nous</Nav.Link></Nav.Item>  
                         </Nav>
                             <Button className="logout" variant="light" onClick={logout}>

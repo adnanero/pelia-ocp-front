@@ -1,0 +1,217 @@
+
+
+ figure {
+	position: relative;
+	float: left;
+  overflow: hidden;
+  width: 100%;
+	/* height: 100%; */
+	text-align: center;
+  cursor: pointer;
+  border-radius: 82% 82% 82% 82% / 82% 82% 82% 82%;
+  -webkit-box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);
+  -moz-box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);
+  box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);}
+
+figure img {
+	position: relative;
+	display: block;
+	min-height: 100%;
+	min-width: 100%;
+	opacity: 0.8;
+}
+
+figure figcaption {
+    position: absolute; 
+    top: 0;  
+    height: 100%; 
+    width:100%;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 1.25em;
+	-webkit-Sbility: hidden;
+}
+
+figure figcaption::before,
+figure figcaption::after {
+	pointer-events: none;
+}
+
+
+figure figcaption .layer{
+    width:100%;
+    height:100%; 
+    position:absolute;
+    background:#038DFE;
+    opacity:0.4;
+    -webkit-transition: opacity 0.35s;
+	transition: opacity 0.35s;
+}
+
+
+.medecin figure.effect-apollo .status {
+  border : 0px;
+  display: inline-block;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin: 1rem;
+  -webkit-transition: all 0.35s ease-in-out;
+	transition: all 0.35s ease-in-out;
+}
+figure svg {
+  display: none;
+}
+figure span {
+  visibility: hidden;
+  margin-left: 5px;
+  width: 0;
+  position: absolute;
+  opacity: 0;
+  font-weight: 600;
+  transition: visibility 0s, opacity 0.5s linear, position 0.3s;
+}
+.medecin figure svg {
+  display: inline-block;
+  z-index: 99;
+}
+.medecin figure.effect-apollo:hover span {
+  visibility: visible;
+  opacity: 1;
+  position: relative;
+}
+.medecin figure.effect-apollo:hover .status.onligne {
+  border: 3px solid #5cb85c;
+  color:#5cb85c;
+  
+
+}
+.medecin figure.effect-apollo:hover .offline {
+  border: 3px solid #d9534f;
+  color: #d9534f;
+}
+figure.effect-apollo {
+	background: #038DFE;
+}
+
+figure.effect-apollo img {
+	opacity: 0.95;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: scale3d(1.05,1.05,1);
+	transform: scale3d(1.05,1.05,1);
+}
+
+figure.effect-apollo figcaption::before {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(255,255,255,0.5);
+	content: '';
+	-webkit-transition: -webkit-transform 0.6s;
+	transition: transform 0.6s;
+	-webkit-transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,-100%,0);
+	transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,-100%,0);
+}
+
+figure.effect-apollo:hover img {
+	opacity: 0.6;
+	-webkit-transform: scale3d(1,1,1);
+	transform: scale3d(1,1,1);
+}
+
+figure.effect-apollo:hover figcaption::before {
+	-webkit-transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,100%,0);
+	transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,100%,0);
+}
+
+figure.effect-apollo:hover figcaption .layer{
+opacity: 0;
+transition-delay: 0.1s;
+}
+figure.effect-apollo h5 {
+	text-align: center;
+    opacity: 1;
+    z-index: 99;
+    font-weight: 300;
+    margin: 0;
+ 
+}
+figure.effect-apollo p {
+	text-align: center;
+    opacity: 1;
+    z-index: 99;
+    font-weight: 300;
+    color: #fff;
+    margin: 0;
+
+}
+figure.effect-apollo:hover h5 {
+	padding:  1em 0;
+	border-bottom: 4px solid #fff;
+
+}
+
+.villes-enter {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  .villes-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+    transition-delay: 0.1s;
+  }
+  .villes-exit {
+    opacity: 1;
+  }
+  .villes-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+
+  }
+
+  .medecins-enter {
+    opacity: 0;
+    transform: scale(0.9);
+
+  }
+  .medecins-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+    transition-delay: 0.1s;
+
+  }
+  .medecins-exit {
+    opacity: 1;
+  }
+  .medecins-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+  }
+
+  .chat-enter {
+    opacity: 0;
+    transform: scale(0.9);
+
+  }
+  .chat-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+    transition-delay: 0.1s;
+
+  }
+  .chat-exit {
+    opacity: 1;
+  }
+  .chat-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+  }
+  

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/css/style.css';
+import './assets/css/chat.css';
+import 'react-vertical-timeline-component/style.min.css';
+import 'react-modal-video/css/modal-video.min.css';
 
 import Admin from './layouts/admin'
 import Public from './layouts/public'

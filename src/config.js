@@ -1,8 +1,8 @@
 
  let baseUrl={
-     lumen : "https://ocp.pelia.ma:8080/",
-     node: "https://ocp.pelia.ma:5000/",
-     overlays: "https://ocp.pelia.ma"
+     lumen : "http://localhost:8080/",
+     node: "http://localhost:4300/",
+     overlays: "localhost"
  }
 
  export default baseUrl

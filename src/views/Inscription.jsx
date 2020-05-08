@@ -104,6 +104,7 @@ class ElementForm extends Component  {
             email: "",
             password:"",
             password_confirmation: "",
+            villes:[],
             ville: "",
             fieldValidationErrors:{
                 nomError:false,
@@ -133,6 +134,7 @@ class ElementForm extends Component  {
             (this.state.sexe !== "")
              ){
                 let data = this.traitementDonnee();
+                console.log(data)
                 Axios.post(`${baseUrl.lumen}api/register` , data, {headers: {'Content-Type': 'application/json'}})
                 .then(res => {
                     this.setState({sending: false, success:true});
@@ -213,7 +215,7 @@ class ElementForm extends Component  {
         formData.phone=this.state.phone
         formData.email=this.state.email
         formData.prenom=this.state.prenom
-        formData.ville=this.state.ville
+        formData.id_ville=this.state.ville
         formData.password=this.state.password
         formData.password_confirmation = this.state.password_confirmation
         return formData;
@@ -235,9 +237,15 @@ class ElementForm extends Component  {
         this.setState({[name]: value}) ;
     }
 
-  
+    componentDidMount(){
+        Axios.get(`${baseUrl.lumen}api/villes?app_key=base64:HWKowqxmoXiNlACwEpk+ZqDie3DAQgtqvUncFXotLy4=` , {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            this.setState({villes: res.data})
+        })
+        .catch(error =>{ console.log("on n'a pas pus se connécter au serveur")})
+    }
     render(){
-        let {password_confirmation, password, fieldValidationErrors, nom, prenom, phone, email, donneIncorecte, ville, success, sending} = this.state
+        let {villes, password_confirmation, password, fieldValidationErrors, nom, prenom, phone, email, donneIncorecte, ville, success, sending} = this.state
     return (
         <ThemeProvider theme={theme}>     
             <form onSubmit={this.handleSubmit} autoComplete="off">
@@ -395,7 +403,7 @@ class ElementForm extends Component  {
                             onChange={this.handleChange}
                             >
                                 {villes.map(((ville, index) =>
-                                        <MenuItem key={index} value={ville.name}>{ville.name}</MenuItem>
+                                        <MenuItem key={index} value={ville.id}>{ville.nom_ville}</MenuItem>
                                         ))
                                 }
                             </Select>
@@ -491,11 +499,3 @@ let content = {
     validation:{fr:"Vos informations sont ajoutées avec succès", ar:"تم إضافة معلوماتك بنجاح"}
 }
 
-const villes = [
-    { name: 'casablanca', isActive:  true},
-    { name: 'El jadida', isActive: true },
-    { name: 'Safi', isActive: true },
-    { name: 'Youssoufia', isActive: true },
-    { name: 'Khouribga', isActive: true },
-    { name: "Laayoune", isActive: true }
-];

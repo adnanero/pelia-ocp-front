@@ -1,5 +1,5 @@
 const UsersModel = require('./../models/user');
-const Suggestion = require('./../models/suggestion')
+
 var Pusher = require('pusher');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -90,10 +90,4 @@ exports.authPatient = (req, res) =>{
     req.session.name = req.body.name
     
     res.status(200).json({access_token: token, user: req.body })
-}
-exports.suggestion = (req, res) => {
-    let {rating, suggestion} = req.body
-    Suggestion.create({rating: rating, suggestion:suggestion })
-    .then( ( ) => res.status(200).json({error: false, message: "votre suggestion à bien était ajouter"}) )
-    .catch(( ) => res.status(200).json({error: true, message: "suggestion non enregistrer"}) )
 }

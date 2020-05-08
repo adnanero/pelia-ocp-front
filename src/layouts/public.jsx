@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import WOW from 'wow.js'
 
-import './../assets/css/style.css';
-import 'react-vertical-timeline-component/style.min.css';
-import 'react-modal-video/css/modal-video.min.css';
 
 import Home from './../views/Home'
+import Consultation from './../views/Consultation'
 import Medecin from './../views/medecin'
 import Inscription from './../views/Inscription'
 import About from './../views/About'
@@ -70,6 +68,9 @@ class App extends Component {
             <Switch>
                 <Route exact path="/" render={props => <Home {...props} />} />
                 <Route exact path="/about" render={props => <About {...props} />} />
+                <Route exact path="/consultation" render={props => <Consultation {...props} />} />
+                <Route exact path="/consultation/:ville" render={props => <Consultation {...props} />} />
+
                 <Route exact path="/medecin" render={props => <Medecin {...props} />} />
                 <Route exact path="/contact" render={props => <Contact {...props} />} />
                 <Route exact path="/login" render={props => <Inscription {...props} />} />
