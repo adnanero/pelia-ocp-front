@@ -483,7 +483,7 @@ function PatientAcceuil(props) {
             <Col>
                <Row className="justify-content-center text-center my-5">
                 <h4 className="p-patient">
-                Bonjour cher utilisateur, bienvenue dans votre plateforme <span style={{width:"10%"}}> <img src={LogoPng} width="10%" alt="pelia logo" /> </span>
+                    Bonjour cher utilisateur, bienvenue dans votre plateforme <span style={{width:"10%"}}> <img src={LogoPng} width="10%" alt="pelia logo" /> </span>
                 </h4>
                 </Row>
                 {props.serching && !props.callEnd &&

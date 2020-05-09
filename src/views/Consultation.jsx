@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import Axios  from 'axios';
 
 import {BsCircleFill} from 'react-icons/bs';
+import {FaArrowLeft} from 'react-icons/fa';
 
 import ContactBanner from './../assets/img/contact.png'
 import './consultation.css'
@@ -23,6 +24,7 @@ import baseUrl from './../config'
 import Banner from './../components/BannerSimple'
 
 import ChatPAtient from './../components/patientChat/index'
+import VideoCall from './../components/patientChat/videoChat'
 import { CSSTransition } from 'react-transition-group';
 
 let lang = Cookies.get('lang')
@@ -54,6 +56,8 @@ export default function Home() {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
+    const [inCall, setInCall] = useState("")
+
     const ENDPOINT = 'localhost:4300';
   
     useEffect(() => {
@@ -73,6 +77,10 @@ export default function Home() {
       });
       socket.on("medecin-switch", ({ medecins }) => {
         setMedecinsOnligne(medecins.users)
+      });
+      socket.on("call-entring", ({ type, medecin }) => {
+        setInCall(type)
+        // callback('en ligne & ready');
       });
       socket.on("ticket-switch", ({ type, tickets }) => {
         setConsulting(type)
@@ -106,7 +114,23 @@ export default function Home() {
         socket.on("medecin-switch", ({ medecins }) => {
           setMedecinsOnligne(medecins.users)
         });
+        socket.on('message', (message) => {
+            setMessages(messages => [ ...messages, message ]);
+          });
     }, []);
+
+    const sendMessage = (event) => {
+        event.preventDefault();
+        if(message) {
+            socket.emit('sendMessage', {message, selectedUser: medecin, user }, () => setMessage(''));
+        }
+    }
+   
+    if(inCall === "video" || inCall === "audio"){
+        return (
+            <VideoCall medecin={medecin} patient={user} type={inCall} setInCall={setInCall} />
+        )
+    }
       return (
         <div className="page">
             <Banner title={content.title[lang]} subtitle={content.subtitle[lang]} style={{color:'white'}} banner={ContactBanner}  />
@@ -141,6 +165,7 @@ export default function Home() {
                         onConsuting={onConsuting} 
                         medecin={medecin} 
                         user={user} 
+                        sendMessage={sendMessage}
                     />
                 }
             </Container>
@@ -168,6 +193,8 @@ function Chat(props){
                 user={props.user} 
                 message={props.message} 
                 messages={props.messages}
+                sendMessage={props.sendMessage}
+                
             />
         </div>
             
@@ -255,7 +282,7 @@ function ListeMedecin(props){
    }
     return(
         <Container>
-             <div onClick={ () => props.setVille("")}>retour</div>
+             <div className="retour-ville"> <span onClick={ () => props.setVille("")}> <FaArrowLeft color="#fff" /> retour </span>  </div>
         <Row>
             {
                 medecins.map((medecin, index) =>
@@ -317,7 +344,7 @@ function HoverableImage(props){
     )
 }
 let content = {
-    title:{fr:"Contactez-nous",ar:"اتصل بنا"},
-    subtitle:{fr:"Que vous ayez une question sur les fonctionnalités, les essais, la tarification, le besoin d'une démo ou toute autre chose, notre équipe est prête à répondre à toutes vos questions", 
+    title:{fr:"consultation en ligne",ar:"اتصل بنا"},
+    subtitle:{fr:"choisir votre ville de résidence ensuite votre médecin et attendez votre tours", 
         ar:"سواء كان لديك سؤال حول الميزات أو التجارب أو الأسعار أو تحتاج إلى عرض توضيحي أو أي شيء آخر ، فإن فريقنا على استعداد للإجابة على جميع أسئلتك"}
 }

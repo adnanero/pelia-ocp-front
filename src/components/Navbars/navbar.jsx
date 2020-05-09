@@ -94,7 +94,7 @@ export default class NavbarPublic extends Component {
                                             <Nav.Item as="li"><Nav.Link as={Link} href='/' to="/"> {content.home[lang]}</Nav.Link></Nav.Item>
                                             <Nav.Item as="li"><Nav.Link as={Link} href='/about' to="/about">{content.about[lang]}</Nav.Link></Nav.Item>
                                             <Nav.Item as="li"><Nav.Link as={Link} href='/contact' to="/contact">{content.contact[lang]}</Nav.Link></Nav.Item>  
-                                            <Nav.Item as="li"><Nav.Link as={Link} href='/medecin' to="/medecin">{   content.medecin[lang] }</Nav.Link></Nav.Item>  
+                                            <Nav.Item as="li"><Nav.Link as={Link} href='/consultation' to="/consultation">{   content.consultation[lang] }</Nav.Link></Nav.Item>  
 
                                         </Nav>
                                           </Col>
@@ -132,5 +132,5 @@ let content ={
     about:{fr:"A propos de nous", ar:"عنا"},
     contact:{fr:"Contactez-nous", ar:"اتصل بنا"},
     inscription:{fr:"espace médecins", ar:"منطقة الأطباء"},
-    medecin:{fr:"Vous êtes médecin?", ar:"هل انت طبيب؟"}
+    consultation:{fr:"consultation", ar:"استشارة طبية"}
 }

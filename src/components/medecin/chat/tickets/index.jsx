@@ -32,16 +32,20 @@ return(
       { tickets.length ?
 
       <div>
-        vous a vez ecore : {nmbr_ticket} <br />
-        {
-          onConsuting ?
-          <div className="action-consulting">
-            <button className="btn btn-primary" onClick={ finTicket }>fermer le ticket</button>
-            <button className="btn btn-primary" onClick={ attenteTicket }>mettre en attente</button>
-          </div>
-          :
-          <button className="btn btn-primary" onClick={ passingConsulting }>patient suivant</button>
-        }
+        vous avez ecore : {nmbr_ticket} en attente <br />
+    
+          { 
+            onConsuting &&
+            <div className="action-consulting">
+              <button className="btn btn-primary" onClick={ finTicket }>fermer le ticket</button>
+              <button className="btn btn-primary" onClick={ attenteTicket }>mettre en attente</button>
+            </div>
+          }
+          { !onConsuting && nmbr_ticket > 0 &&
+            <button className="btn btn-primary" onClick={ passingConsulting }>patient suivant</button>
+          }
+           
+        
         
       </div>
       :

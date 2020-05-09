@@ -12,7 +12,7 @@ module.exports.addUser = ({ socket_id, name, id, type }) => {
     
   if(existingUser) {
      error= 'Username is taken.';
-
+    return {tickets: tickets[user.name]}
   };
   const user = { socket_id, id, name, type };
   medecins.push(user);
@@ -131,10 +131,7 @@ module.exports.getNumber = ({ medecin}) =>{
   return count
 }
 
-module.exports.getUser = (socket_id) =>{
-  let user = users.find((user) => user.socket_id === socket_id);
-  return user
-}
+
 
 
 module.exports.getMedecinsOnligne = () =>{

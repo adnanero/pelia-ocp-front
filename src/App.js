@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/css/style.css';
 import './assets/css/chat.css';
+import './assets/css/video-call.css';
 import 'react-vertical-timeline-component/style.min.css';
 import 'react-modal-video/css/modal-video.min.css';
 
 import Admin from './layouts/admin'
 import Public from './layouts/public'
+import Consultation from './views/Consultation'
 
 
 import Medecin from './layouts/medecin'
@@ -54,6 +56,7 @@ class App extends Component {
             <Route exact path="/call-video/:name/:medecin" render={props => <Call {...props} />} />
             <Route path={["/profil", "/call-video"]} render={props =>  <Medecin {...props} /> } />
             <Route exact path="/admin/pelia" render={props => <Admin {...props} />} />
+            <Route exact path="/consultation" render={props => <Consultation {...props} />} />
             <Route path="/not-found" render={props => <NotFound {...props} />} />
             <Route path="/" render={props => <Public {...props} />} />
         </Switch>

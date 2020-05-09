@@ -6,18 +6,14 @@ import InfoBar from './../medecin/chat/infoBar/index'
 
 const Chat = (props) => {
 
-  const sendMessage = (event) => {
-    event.preventDefault();
-
-    
-  }
+  
   return (
       <div className="chat">
         <Row className="discussion m-0">
             <Col lg="12" className="chat-messages p-0">
                 <InfoBar user={{name: props.medecin.nom + " " + props.medecin.prenom}} />
-                <Messages messages={props.messages} name={props.user.nom + " " + props.user.prenom} />
-                <SendMessageForm message={props.message} setMessage={props.setMessage} sendMessage={sendMessage} />
+                <Messages messages={props.messages} user={props.user} />
+                <SendMessageForm message={props.message} setMessage={props.setMessage} sendMessage={props.sendMessage} />
             </Col>
         </Row> 
       </div>

@@ -1,13 +1,13 @@
 
-const { addUser, removeUser, getUser, getUsersInRoom,getNumber, changeTicket, getOther, getMedecinsOnligne, addTicket } = require('./users');
+const { addUser, removeUser, getUsersInRoom,getNumber, changeTicket, getOther, getMedecinsOnligne, addTicket } = require('./users');
 
 
 exports.chatMAnager = (io) => {
 
     io.on('connect', (socket) => {
         socket.on('join', ({ name, id, type}, callback) => {
-          const { error, user } = addUser({ socket_id: socket.id, name, id, type });
-          if(error) return callback({error: true, message:error});
+          const { error, user, tickets } = addUser({ socket_id: socket.id, name, id, type });
+          if(error) return callback({error: true, tickets, message:error});
           socket.join(id);
           const medecins = getMedecinsOnligne();
           if(user.type === "medecin"){
@@ -51,18 +51,19 @@ exports.chatMAnager = (io) => {
 
       
 
-        socket.on('sendMessage', ({message, selectedUser}, callback) => {
-      
-          let user = getUser(socket.id);
-          const other = getOther(selectedUser.id);
-          if(user) delete user.socket_id;
-          
-          if(other){
-            io.to(selectedUser.id).emit('message', { user, room: selectedUser.room , text: message });
+        socket.on('sendMessage', ({message, selectedUser, user}, callback) => {
+                
+          // if(message){
+            io.to(selectedUser.id).emit('message', { user , text: message });
+            io.to(user.id).emit('message', { user , text: message });
             callback();
-          }
+          // }
         
         }); 
+        socket.on('call-patient', ({selectedUser, user, type}) => {               
+            io.to(selectedUser.id).emit('call-entring', { medecin : user , type });
+        }); 
+      
       
         socket.on('disconnect', (reason) => {
           const users = removeUser(socket.id);

@@ -5,8 +5,10 @@ import Cookies from 'js-cookie'
 import UsersOnline from './tickets/index';
 import Messages from './messages/index';
 import InfoBar from './infoBar/index';
+import VideoChat from './videoChat'
 import SendMessageForm from './sendingMessage/index';
 import { Redirect } from "react-router-dom";
+
 
 
 let socket;
@@ -21,8 +23,9 @@ const Chat = () => {
   const [resolved, setResolved] = useState(0);
   const [nmbr_ticket, setNombreTicket] = useState("")
 
+  const [inCall, setInCall] = useState(false)
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState({});
+  const [messages, setMessages] = useState([]);
  
   const ENDPOINT = 'localhost:4300';
  
@@ -32,7 +35,7 @@ const Chat = () => {
     if(Cookies.get('user') !== undefined){
       userAuth = JSON.parse(Cookies.get('user'));
     }
-    let userSocket = {name: userAuth.nom + " " + userAuth.prenom , id: userAuth.id, type: "medecin"}
+    let userSocket = {name: userAuth.nom + userAuth.prenom , id: userAuth.id, type: "medecin"}
     setUser(userSocket)
 
     socket.emit('join',  userSocket , (response) => {
@@ -46,13 +49,10 @@ const Chat = () => {
   useEffect(() => {
    
     socket.on('message', (message) => {
-      messages[message.room].push(message.text)
-    });
-    
-    socket.on("roomData", () => {
-      // setUsers(users);
+      setMessages(messages => [ ...messages, message ]);
     });
 
+    
 }, []);
 useEffect(() => {
   socket.on("switch-patient", (response) => {
@@ -61,9 +61,9 @@ useEffect(() => {
       if(tickets[selectedUser] !== undefined){
          if(response.id_user_deleted === tickets[selectedUser]['id']){
           setConsulting(false)
+          setMessages([])
         }
       }
-       
         (response.tickets !== undefined)? setTickets(response.tickets) : setTickets([])
       
     }else{
@@ -91,11 +91,13 @@ const passingConsulting = () => {
 }
 
   const finishingConsult = () => {
+
     socket.emit('switch-ticket',  {selectedUser : selectedUser, type:"fin", medecin : user} , (response) => {
       if(!response.error){
         if(response.tickets === undefined){
           response.tickets = []
         }
+        setMessages([])
         setTickets(response.tickets)
       }
     });
@@ -108,6 +110,7 @@ const passingConsulting = () => {
         if(response.tickets === undefined){
           response.tickets = []
         }
+        setMessages([])
         setTickets(response.tickets)
       }
     });
@@ -116,19 +119,37 @@ const passingConsulting = () => {
     event.preventDefault();
 
     if(message) {
-      socket.emit('sendMessage', {message, selectedUser: tickets[selectedUser] }, () => setMessage(''));
+      socket.emit('sendMessage', {message, selectedUser: tickets[selectedUser], user }, () => setMessage(''));
     }
   }
  
   if(Cookies.get('user') === undefined){
     return <Redirect to="/authentification" />
   }
+
+  const audioCall = () => {
+    setInCall("audio")
+  }
+
+  const videoCall = () =>{
+    
+    setInCall("video")
+  }
+  const medecinReady = () =>{
+    socket.emit('call-patient', { selectedUser: tickets[selectedUser], type:inCall, user });
+  } 
+
+  if(inCall=== "audio" || inCall === "video"){
+    return(
+      <VideoChat patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} medecinReady={medecinReady} />
+    )
+  }
   return (
       <div className="chat">
-        <Row >
+        <Row className="justify-content-around ">
           <Col lg="10">
-          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} user={user} />
-          <Row className="discussion m-0">
+          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} />
+          <Row className="discussion m-0 bg-white">
           <Col lg="4">
           <UsersOnline
             tickets={tickets} 
@@ -146,7 +167,7 @@ const passingConsulting = () => {
         { onConsuting ?
           <Col lg="8" className="chat-messages">
           
-          <Messages messages={messages[selectedUser]} name={user.name} />
+          <Messages messages={messages} user={user} />
           <SendMessageForm message={message} setMessage={setMessage} sendMessage={sendMessage} />
       </Col>
       : 

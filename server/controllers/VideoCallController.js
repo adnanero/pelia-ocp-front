@@ -76,7 +76,6 @@ exports.lanceVideocall = (req, res) => {
 }
 
 exports.authPatient = (req, res) =>{
-
     const token = jwt.sign({
         email: req.body.name,
         userId: req.body.id
@@ -85,9 +84,8 @@ exports.authPatient = (req, res) =>{
     expiresIn: '12h'
     }
 );
-
     req.session.id = req.body.id
     req.session.name = req.body.name
     
-    res.status(200).json({access_token: token, user: req.body })
+    res.status(200).json({access_token: token })
 }
