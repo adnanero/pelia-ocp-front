@@ -69,7 +69,7 @@ function SignInSide() {
   }
 
   if(authentified || Cookie.get('medecinAuth') !== undefined){
-    return (<Redirect to="/call-video" />)
+    return (<Redirect to="/profil/chat" />)
   }
 
   return (
