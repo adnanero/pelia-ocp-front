@@ -6,7 +6,7 @@ import {CircularProgress} from '@material-ui/core';
 import { Button} from 'react-bootstrap'
 
 import {BsCircleFill} from 'react-icons/bs';
-import {FaPhoneSlash, FaPhone, FaVideo, FaCheck} from 'react-icons/fa'
+import { FaPhone, FaVideo, FaCheck} from 'react-icons/fa'
 
 const InfoBar = ({ selectedUser, user, resolved, audioCall, videoCall, onConsuting, respondingProcess }) => (
   <div className="infoBar">

@@ -1,5 +1,4 @@
-import React, { Component, useState } from 'react';
-import Pusher from 'pusher-js';
+import React, { Component } from 'react';
 import Peer from 'simple-peer';
 import autoBind from 'react-autobind';
 import Axios from 'axios'
@@ -7,17 +6,13 @@ import Axios from 'axios'
 import baseUrl from './../../config'
 
 import {CircularProgress} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { Button, Row, Col} from 'react-bootstrap'
-import {FaPhoneSlash, FaPhone, FaVideo, FaCheck} from 'react-icons/fa'
+import {FaPhoneSlash, FaPhone, FaCheck} from 'react-icons/fa'
 
 import callerTone from './../../assets/media/callertone.mp3'
-import notifTone from './../../assets/media/double_ping.mp3'
 
 
 export default class ElemenetsCall extends Component {
-    _isMounted = false;
-
     constructor(props) {
         super(props);
         autoBind(this);
@@ -26,127 +21,63 @@ export default class ElemenetsCall extends Component {
             timerStart: 0,
             timerTime: 0,
             stream: null,
-            isCalling:false
+            isCalling:false,
+            medecin: props.medecin,
+            patient: props.patient
         };
-        this.peers = {};
     }
     componentDidMount() {
-        this._isMounted = true;
-
+      
         if(this.props.type === "video"){
             this.initiatorCallVideo()
         }else{
             this.initiatorCallAudio()
         }
-        Axios.post(`${baseUrl.node}video-call/patient`, this.props.patient)
+        Axios.post(`${baseUrl.node}video-call/patient`, this.state.patient)
         .then((res) => {
-        this.setupPusher({token: res.data.access_token, username: this.props.patient.name });
+            this.setupSocket({token: res.data.access_token, username: this.state.patient.name })
         }).catch((r) => console.log("on a pas pus vous connecter"))
     }
-  
-    setupPusher(data) {
-        this.pusher = new Pusher('2e923196325bd5eddb8c', {
-            authEndpoint: `${baseUrl.node}video-call/start`,
-            cluster: 'eu',
-            auth: {
-                params: { name:data.username },
-                headers: {
-                    'Authorization': `Bearer ${ data.token }`
-                }
-            }
-        });
-
-        this.channel = this.pusher.subscribe('presence-video-channel');
-        this.channel.bind(`client-signal-${data.username}`, (signal) => {
-            let peer = this.peers[signal.userName];
-            if(peer === undefined) {
-                peer = this.startPeer(signal.userName, false);
-            }
+    setupSocket(){
+        let socket = this.props.socket;
+        socket.emit('patient-ready', {selectedUser: this.state.medecin} )
+        
+        socket.on('patient-call', (response) => {
+            // console.log(response)
+            this.setState({ isCalling: true});
+        })
+        socket.on('reject-call-patient', (response) => {
+            let duree = Date.now() - this.state.timeAppel;
+            duree = duree.toString();
+           Axios.post(`${baseUrl.lumen}api/appel` , {duree: duree}, {headers: {'Content-Type': 'application/json'}})
+            .then(res => {
+            this.stopStream();
+            this.setState({ respondingProcess:false, passingCall: false,responding:false,  id_appel: res.id_appel});
+            this.props.setInCall("")
+           });
+        })
+        socket.on('patient-signal-call', ({data}) => {
+            // console.log(response)
+            // this.setState({ isCalling: true});
             this.setState({responding: true})
-            peer.signal(signal.data);
-        });
+            this.state.peer.signal(data);
+        })
+    }
+    componentWillUnmount(){
+        this.props.socket.removeAllListeners('patient-call')
+        this.props.socket.removeAllListeners('reject-call-patient')
+        this.props.socket.removeAllListeners('reject-call-patient')
 
-        this.channel.bind(`client-online-${data.username}`, (msg) =>{
-            if( !this.state.hisOnline ){
-                    this.channel.trigger(`client-online-${this.props.medecin.nom + this.props.medecin.prenom}`, {
-                        type: 'online',
-                })
-                this.setState({hisOnline: true})
-            }
-        })
-        this.channel.bind('pusher:subscription_succeeded', () => {
-                this.channel.trigger(`client-online-${this.props.medecin.nom + this.props.medecin.prenom}`, {
-                    type: 'online',
-                })
-        });
-        this.channel.bind(`client-call-${data.username}`, (msg) =>{
-            this.setState({ isCalling: true})
-        });
-       
-        this.channel.bind(`client-reject-${data.username}`, (msg) =>{           
-                let duree = Date.now() - this.state.timeAppel;
-                duree = duree.toString();
-               Axios.post(`${baseUrl.lumen}api/appel` , {duree: duree}, {headers: {'Content-Type': 'application/json'}})
-                .then(res => {
-                this.stopStream();
-                this.setState({ respondingProcess:false, passingCall: false,responding:false,  id_appel: res.id_appel});
-                this.props.setInCall("")
-               });
-               
-        })
-        // /*   la fin d'initiation du pusher et leur channel  */
+        if(this.pusher){
+            this.channel.unbind();
+            this.pusher.unsubscribe('presence-video-channel')
+        }
+        if(this.state.peer){
+            this.state.peer.destroy();
+        }
     }
 
-    startPeer(userName, initiator = true) {
-        const peer = new Peer({
-            initiator,
-            stream: this.state.stream,
-            config: { iceServers: 
-                [
-                    {
-                      urls: "stun:pelia.ma:3478",
-                    },
-                    {
-                      urls: "turn:pelia.ma:3478",
-                      username: "peliaturn",
-                      credential: "ejfLUNE6C=fM&4P!"
-                    }
-                ]
-            },
-            trickle: false
-        });
-        peer.on('signal', (data) => {
-            this.channel.trigger(`client-signal-${userName}`, {
-                type: 'signal',
-                userName: this.props.patient.name,
-                data: data
-            })
-        })
- 
-        peer.on('stream', (stream) => {
-            if(this.props.type === "video"){
-                try {
-                    this.userVideo.srcObject = stream;
-                } catch (e) {
-                    this.userVideo.src = URL.createObjectURL(stream)
-                }
-                this.userVideo.play();
-            }else{
-                try {
-                    this.userAudio.srcObject = stream;
-                } catch (e) {
-                    this.userAudio.src = URL.createObjectURL(stream)
-                }
-                this.userAudio.play();
-            }
-            if(stream !== null){
-                this.setState({passingCall: true, respondingProcess:false, timeAppel: Date.now() })
-            }
-        })
-     
-        return peer;
-    }
-
+  
     
      async initiatorCallVideo(){
 	     let options ={
@@ -159,8 +90,10 @@ export default class ElemenetsCall extends Component {
                         let videoStream = new MediaStream(stream.getVideoTracks(), options);
                         try {
                             this.myVideo.srcObject = videoStream;
+
                         } catch (e) {
                             this.myVideo.src = URL.createObjectURL(videoStream)
+
                         }
                         // si c'est un patient qui reçoit l'appel on débute le caller tone
                   
@@ -201,8 +134,49 @@ export default class ElemenetsCall extends Component {
 
 
     confirmCall(){
-        this.peers[this.props.medecin.nom + this.props.medecin.prenom] = this.startPeer(this.props.medecin.nom + this.props.medecin.prenom);
-        this.setState({ respondingProcess: true});
+    const peer = new Peer({
+        initiator:true,
+        stream: this.state.stream,
+        config: { iceServers: 
+            [
+                {
+                    urls: "stun:pelia.ma:3478",
+                },
+                {
+                    urls: "turn:pelia.ma:3478",
+                    username: "peliaturn",
+                    credential: "ejfLUNE6C=fM&4P!"
+                }
+            ]
+        },
+        trickle: false
+    });
+    peer.on('signal', (data) => {
+        this.props.socket.emit('confirm-call', {selectedUser: this.state.medecin, data })
+    })
+
+        peer.on('stream', (stream) => {
+            if(this.props.type === "video"){
+                try {
+                    this.userVideo.srcObject = stream;
+                } catch (e) {
+                    this.userVideo.src = URL.createObjectURL(stream)
+                }
+                this.userVideo.play();
+            }else{
+                try {
+                    this.userAudio.srcObject = stream;
+                } catch (e) {
+                    this.userAudio.src = URL.createObjectURL(stream)
+                }
+                this.userAudio.play();
+            }
+            if(stream !== null){
+                this.setState({passingCall: true, respondingProcess:false, timeAppel: Date.now() })
+            }
+        })
+     
+        this.setState({ respondingProcess: true, peer});
         this.callerTone.pause();
     }
 
@@ -213,9 +187,7 @@ export default class ElemenetsCall extends Component {
         .then(res => {
         this.stopStream();
         this.setState({ respondingProcess:false, passingCall: false, responding:false,  id_appel: res.id_appel});
-        this.channel.trigger(`client-reject-${this.props.medecin.nom + this.props.medecin.prenom}`, {
-            type: 'reject-call',
-        });
+        this.props.socket.emit('patient-reject-call', {selectedUser: this.state.medecin})
         this.props.setInCall("")
        });
     }
@@ -244,13 +216,13 @@ export default class ElemenetsCall extends Component {
                                 { !passingCall &&                      
                                     <Row className="text-center d-flex justify-content-around w-100 p-4 ml-1 mt-5">   
                                         <p className="text-center caller " style={{maxHeight: "20%"}}> Un appel entrant de la part de votre médecin
-                                        <span className="name-caller">  { "Dr. " + this.props.medecin.nom + " " +this.props.medecin.prenom}</span>  </p>
+                                        <span className="name-caller">  { "Dr. " + this.state.medecin.nom + " " +this.state.medecin.prenom}</span>  </p>
                                     </Row>    
                                 }
                             <Row className="end-call">
                                 <ButtonProcess 
                                         className="action" 
-                                        onClick={() => this.rejectCall()} 
+                                        onClick={this.rejectCall} 
                                         type="button"   
                                         variant="danger" 
                                         success={false} 

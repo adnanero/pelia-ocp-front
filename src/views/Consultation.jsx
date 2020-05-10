@@ -16,7 +16,7 @@ import safi from './../assets/img/villes/safi.jpg'
 import youssoufia from './../assets/img/villes/youssoufia.jpg'
 import khouribga from './../assets/img/villes/khouribga.jpg'
 import laayoune from './../assets/img/villes/laayoune.jpg'
-import medecin from './../assets/img/medecin/doctor.png'
+// import medecin from './../assets/img/medecin/doctor.png'
 import medecine from './../assets/img/medecin/female-doctor.png'
 
 import baseUrl from './../config'
@@ -58,7 +58,7 @@ export default function Home() {
 
     const [inCall, setInCall] = useState("")
 
-    const ENDPOINT = 'localhost:4300';
+    const ENDPOINT =  baseUrl.node;
   
     useEffect(() => {
       socket = io(ENDPOINT);
@@ -78,8 +78,9 @@ export default function Home() {
       socket.on("medecin-switch", ({ medecins }) => {
         setMedecinsOnligne(medecins.users)
       });
-      socket.on("call-entring", ({ type, medecin }) => {
+      socket.on("call-entring", ({ type }) => {
         setInCall(type)
+        console.log(type)
         // callback('en ligne & ready');
       });
       socket.on("ticket-switch", ({ type, tickets }) => {
@@ -120,6 +121,7 @@ export default function Home() {
     }, []);
 
     const sendMessage = (event) => {
+
         event.preventDefault();
         if(message) {
             socket.emit('sendMessage', {message, selectedUser: medecin, user }, () => setMessage(''));
@@ -128,9 +130,10 @@ export default function Home() {
    
     if(inCall === "video" || inCall === "audio"){
         return (
-            <VideoCall medecin={medecin} patient={user} type={inCall} setInCall={setInCall} />
+            <VideoCall socket={socket} medecin={medecin} patient={user} type={inCall} setInCall={setInCall} />
         )
     }
+    
       return (
         <div className="page">
             <Banner title={content.title[lang]} subtitle={content.subtitle[lang]} style={{color:'white'}} banner={ContactBanner}  />

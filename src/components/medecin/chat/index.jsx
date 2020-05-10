@@ -9,6 +9,7 @@ import VideoChat from './videoChat'
 import SendMessageForm from './sendingMessage/index';
 import { Redirect } from "react-router-dom";
 
+import baseUrl from './../../../config'
 
 
 let socket;
@@ -27,7 +28,7 @@ const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
  
-  const ENDPOINT = 'localhost:4300';
+  const ENDPOINT = baseUrl.node;
  
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -136,12 +137,12 @@ const passingConsulting = () => {
     setInCall("video")
   }
   const medecinReady = () =>{
-    socket.emit('call-patient', { selectedUser: tickets[selectedUser], type:inCall, user });
+    // socket.emit('call-patient', { selectedUser: tickets[selectedUser], type:inCall, user });
   } 
 
   if(inCall=== "audio" || inCall === "video"){
     return(
-      <VideoChat patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} medecinReady={medecinReady} />
+      <VideoChat socket={socket} patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} medecinReady={medecinReady} />
     )
   }
   return (
@@ -162,6 +163,7 @@ const passingConsulting = () => {
             metVeille={metVeille}
             finishingConsult={finishingConsult}
             passingConsulting={passingConsulting}
+            setResolved={setResolved}
           />
         </Col>
         { onConsuting ?

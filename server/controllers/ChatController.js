@@ -15,7 +15,7 @@ exports.chatMAnager = (io) => {
           }
           callback({error:false, medecins});
         });
-      
+
         socket.on('add-tickets', ({medecin, user}, callback) => {
           const { error, message, nombre, tickets } = addTicket({ medecin, user, socket_id: socket.id });
 
@@ -60,10 +60,27 @@ exports.chatMAnager = (io) => {
           // }
         
         }); 
-        socket.on('call-patient', ({selectedUser, user, type}) => {               
-            io.to(selectedUser.id).emit('call-entring', { medecin : user , type });
+        socket.on('call-patient', ({selectedUser, type}) => {               
+            io.to(selectedUser.id).emit('call-entring', { type });
         }); 
-      
+        socket.on('patient-ready', ({selectedUser}) => {               
+          io.to(selectedUser.id).emit('ready-patient', { });
+      }); 
+      socket.on('client-call', ({selectedUser}) => {               
+        io.to(selectedUser.id).emit('patient-call', { });
+      }); 
+      socket.on('confirm-call', ({selectedUser, data}) => {               
+        io.to(selectedUser.id).emit('signal-call', { data });
+      }); 
+      socket.on('medecin-confirm-call', ({selectedUser, data}) => {               
+        io.to(selectedUser.id).emit('patient-signal-call', { data });
+      }); 
+      socket.on('medecin-reject', ({selectedUser}) => {               
+        io.to(selectedUser.id).emit('reject-call-patient', {  });
+      }); 
+      socket.on('patient-reject-call', ({selectedUser}) => {               
+        io.to(selectedUser.id).emit('reject-call-medecin', {  });
+      }); 
       
         socket.on('disconnect', (reason) => {
           const users = removeUser(socket.id);
