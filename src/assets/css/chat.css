@@ -15,6 +15,9 @@
   color: #fff;
   width: 100px;
 }
+.discussion-container{
+  border-radius: 0 0 15px 15px;
+}
 .chat {
     border-radius: 8px;
     padding-bottom: 3rem;
@@ -96,6 +99,7 @@
     height: 75%;
     overflow: hidden;
     position: relative;
+    padding-bottom: 25px;
   }
   
   .messages {
@@ -104,6 +108,7 @@
     max-height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+    margin-bottom: 15px;
   }
   .messages::-webkit-scrollbar {
     width: 3px;
@@ -164,11 +169,11 @@
   }
   .discussion .messageForm{
     background-color:#f0f0f0;
-    padding: 12px 12px;
+    padding: 12px 0px;
     position: absolute;
     width: 100%;
-    bottom: 2px;
-    right:10px;
+    bottom: 0px;
+    border-radius: 0 0 13px 0;
   }
   .discussion .chatContainer .inputChat {
     font-family: "Poppins";

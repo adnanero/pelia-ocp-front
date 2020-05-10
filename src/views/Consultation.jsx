@@ -46,45 +46,63 @@ const imageVilles = [
 
 
 export default function Home() {
-    const [ville, setVille] = useState("")
+    const [ville, setVilleSoiced] = useState("")
     const [medecin, setMedecin] = useState("")
     const [medecinsOnligne, setMedecinsOnligne] = useState([])
     const [user, setUser ] = useState({});
-    const [number, setNumber] = useState("")
-    const [onConsuting, setConsulting] = useState("");
+    const [ticket, setTicket] = useState({})
+    const [number, setNumber] = useState("");
 
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
     const [inCall, setInCall] = useState("")
 
+    const [showVilles, setshowVilles] = useState(true)
+    const [showMedecins, setshowMedecins] = useState(false)
+
     const ENDPOINT =  baseUrl.node;
   
     useEffect(() => {
       socket = io(ENDPOINT);
-      let idGenerated =  Math.random().toString().substr(3, 9)
-      let nameGenerated =  Math.random().toString(36).substr(3, 9)
+        let nameGenerated = Cookies.get('name');
+        let idGenerated = Cookies.get('id');
+      if(nameGenerated === undefined || idGenerated === undefined){
+        idGenerated =  Math.random().toString().substr(3, 9);
+        nameGenerated =  Math.random().toString(36).substr(3, 9);
+        Cookies.set("name",nameGenerated, { expires: 1 });
+        Cookies.set("id",idGenerated, { expires: 1 });
+      }
       let userSocket = {name: nameGenerated, id: parseInt(idGenerated), type: "patient"}
-        setUser(userSocket)
+
+      setUser(userSocket)
   
       socket.emit('join',  userSocket , (response) => {
         if(response.error) {
           alert(response.message);
         }else{
-            setMedecinsOnligne(response.medecins)
+            setMedecinsOnligne(response.medecinsOnligne)
+            setTicket(response.ticket)
         }
-
       });
-      socket.on("medecin-switch", ({ medecins }) => {
-        setMedecinsOnligne(medecins.users)
+
+      socket.on("medecin-switch", ({ user, type, medecinsOnligne }) => {
+          if(type === "diconnected"){
+              if(user.id === medecin.id){
+                  alert("ce médecin est déconnecter")
+              }
+
+          }
+        setMedecinsOnligne(medecinsOnligne)
+      });
+      socket.on('message', (message) => {
+        setMessages(messages => [ ...messages, message ]);
       });
       socket.on("call-entring", ({ type }) => {
         setInCall(type)
-        console.log(type)
-        // callback('en ligne & ready');
       });
-      socket.on("ticket-switch", ({ type, tickets }) => {
-        setConsulting(type)
+      socket.on("ticket-switch", ({ type, tickets, ticket }) => {
+        setTicket(ticket)
         if(type === "fin"){
             let count= 0;
             tickets.forEach(ticketVerify => {
@@ -101,24 +119,26 @@ export default function Home() {
   
     }, [ENDPOINT]);
 
-    const addTicket = () => {
-        socket.emit('add-tickets',  {medecin: medecin, user : user} , (response) => {
+    const setVille = (ville) => {
+        setVilleSoiced(ville)
+        setshowVilles(false)
+        setshowMedecins(true)
+    }
+    const addTicket = (medecin) => {
+        socket.emit('add-tickets',  {medecin, user : user} , (response) => {
             if(response.error) {
               console.log(response.message);
             }else{
                 setNumber(response.nombre)
+                setTicket(response.ticket)
             }
           });   
     }
 
-    useEffect(() => {
-        socket.on("medecin-switch", ({ medecins }) => {
-          setMedecinsOnligne(medecins.users)
-        });
-        socket.on('message', (message) => {
-            setMessages(messages => [ ...messages, message ]);
-          });
-    }, []);
+    const setShowVille = () => {
+        setshowVilles(true)
+        setshowMedecins(false)
+    }
 
     const sendMessage = (event) => {
 
@@ -133,45 +153,46 @@ export default function Home() {
             <VideoCall socket={socket} medecin={medecin} patient={user} type={inCall} setInCall={setInCall} />
         )
     }
-    
-      return (
+    console.log(ticket)
+    return (
+
         <div className="page">
             <Banner title={content.title[lang]} subtitle={content.subtitle[lang]} style={{color:'white'}} banner={ContactBanner}  />
-            <Container className="mt-5"> 
-                <CSSTransition
-                    in={ville==="" && medecin === ""  && onConsuting === ""}
-                    timeout={300}
-                    classNames="villes"
-                    unmountOnExit >
-                        <Villes setVille={setVille} />
-                </CSSTransition>
-                <CSSTransition
-                    in={ville !== "" && medecin === ""  && onConsuting === ""}
-                    timeout={300}
-                    classNames="medecins"
-                    unmountOnExit >
-                        <ListeMedecin medecinsOnligne={medecinsOnligne} setMedecin={setMedecin} ville={ville} setVille={setVille} />
-                </CSSTransition>
-                <CSSTransition
-                    in={medecin !== "" && onConsuting === ""}
-                    timeout={300}
-                    classNames="chat"
-                    unmountOnExit >
-                        <Lobby medecin={medecin} addTicket={addTicket} number={number} user={user} medecinsOnligne={medecinsOnligne}/>
-                </CSSTransition>
-                {
-                    onConsuting !== "" &&
-                    <Chat 
-                        setMessage={setMessage} 
-                        messages={messages} 
-                        message={message}  
-                        onConsuting={onConsuting} 
-                        medecin={medecin} 
-                        user={user} 
-                        sendMessage={sendMessage}
-                    />
+            {
+                    ticket.name === user.name ?  
+                    <Container>
+                        <Chat
+                            setMessage={setMessage} 
+                            messages={messages} 
+                            message={message}  
+                            medecin={medecin} 
+                            user={user} 
+                            sendMessage={sendMessage}
+                            socket={socket}
+                            ticket={ticket}
+                            setTicket={setTicket}
+                        />
+                    </Container>                      
+                   
+                    :
+                    <Container className="mt-5"> 
+                    <CSSTransition
+                        in={showVilles}
+                        timeout={300}
+                        classNames="villes"
+                        unmountOnExit >
+                            <Villes setVille={setVille} />
+                    </CSSTransition>
+                    <CSSTransition
+                        in={showMedecins}
+                        timeout={300}
+                        classNames="medecins"
+                        unmountOnExit >
+                            <ListeMedecin addTicket={addTicket} medecinsOnligne={medecinsOnligne} setshowMedecins={setshowMedecins} setMedecin={setMedecin} ville={ville} setShowVille={setShowVille} />
+                    </CSSTransition>
+                </Container>
                 }
-            </Container>
+           
         </div>
     )
 }
@@ -179,15 +200,14 @@ export default function Home() {
 function Chat(props){
     const [ready, setReadys] = useState(false)
     const setReady = () => {
-        socket.emit('switch-ticket',  { selectedUser : props.user, type:"ready", medecin : props.medecin} , (response) => {
-            if(response.send){
-                setReadys(true)
-            //   setTickets(response.tickets)
-            }
-        });
+        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"ready", medecin : props.medecin});
+        setReadys(true)
     }
-  
-    if(props.onConsuting === "debut"){
+
+    const deleteTicket = () => {
+        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} )
+    }
+    if(props.ticket.status === -1){
        return(
         <div>
             <ChatPAtient 
@@ -197,14 +217,18 @@ function Chat(props){
                 message={props.message} 
                 messages={props.messages}
                 sendMessage={props.sendMessage}
-                
             />
         </div>
-            
     ) 
 
     }
-    else if(props.onConsuting === "fin"){
+    else if (props.ticket.status === 0){
+        return(
+            <Lobby medecin={props.medecin} number={props.number} deleteTicket={deleteTicket} user={props.user}  />
+
+        )
+    }
+    else if(props.ticket.status === -2){
         return(
          <div>
              fin de la discussion avec votre médecin
@@ -212,7 +236,7 @@ function Chat(props){
      ) 
  
      }
-     else if(props.onConsuting === "attente"){
+     else if(props.ticket.status === 1){
         return(
          <div>
 
@@ -232,49 +256,47 @@ function Chat(props){
 }
 
 function Lobby (props){
-  
-    useEffect(() => {
-        props.addTicket()
-    }, []);
-    useEffect (() =>{
-        let index = props.medecinsOnligne.findIndex((med) => med.id === props.medecin.id)
-        if(index === -1){
-            alert('ce médecin à était déconnecter')
-        }
-    },[props.medecinsOnligne]);
 
     return(
         <div>
             <h4>bienvenue au lobby </h4>
             <h5>vous êtes maintenant au queue d'attente du médecin {props.medecin.nom   } votre tours viens après {props.number} personne. Chaque personne prend génèralement 5 à 10 minute </h5>
-            {/* <ChatPAtient {...props} selectedMedecin={props.medecin} /> */}
             <p>quand votre tours vas arriver vous passez directement en discusion avec votre mèdecins</p>
+            <button className="btn btn-primary" onClick={props.deleteTicket}> je veux plus attendre ce médecin </button>
         </div>
     )
 }
 
 
 function ListeMedecin(props){
-    const [medecins, setMedecins] = useState([])
+    const [medecins, setMedecins] = useState([])    
    useEffect(() => {
        Axios.get(`${baseUrl.lumen}api/medecins?id_ville=${props.ville}&&app_key=base64:HWKowqxmoXiNlACwEpk+ZqDie3DAQgtqvUncFXotLy4=` , {headers: {'Content-Type': 'application/json'}})
        .then(res => {
-           res.data.map(medecin=> (props.medecinsOnligne.find((user) => user.id === medecin.id)) ? medecin.onligne=true: medecin.onligne=false )
+           res.data.map((medecin )=>{ 
+               let user = props.medecinsOnligne.find((user) => user.id === medecin.id && user.state === "conected")
+               return (user === undefined) ? medecin.onligne= false : medecin.onligne=true
+            } )
            setMedecins(res.data)
        })
-       .catch(error =>{ console.log("on n'a pas pus se connécter au serveur")})
+       .catch(error =>{ console.log(error)})
    
    }, []);
 
     useEffect(() => {
-        setMedecins(meds =>{
-            meds.map(medecin=> (props.medecinsOnligne.find((user) => user.id === medecin.id)) ? medecin.onligne=true : medecin.onligne=false )
-            return [...meds]
-        });
+        // let newMedecin = medecins
+        medecins.map((medecin) => {
+            let etat =  props.medecinsOnligne.find((user) => user.id === medecin.id && user.state === "conected" )
+            return (etat === undefined) ? medecin.onligne = false : medecin.onligne= true
+        })
+        setMedecins([...medecins])
     },[props.medecinsOnligne]);
+    
    const handleClick = (medecin, event) => {
        if(medecin.onligne){
             props.setMedecin(medecin)
+            props.setshowMedecins(false)
+            props.addTicket(medecin)
        }else{
            
         let medecinDiv = event.currentTarget
@@ -285,7 +307,7 @@ function ListeMedecin(props){
    }
     return(
         <Container>
-             <div className="retour-ville"> <span onClick={ () => props.setVille("")}> <FaArrowLeft color="#fff" /> retour </span>  </div>
+             <div className="retour-ville"> <span onClick={ () => props.setShowVille("")}> <FaArrowLeft color="#fff" /> retour </span>  </div>
         <Row>
             {
                 medecins.map((medecin, index) =>
@@ -320,15 +342,25 @@ function HoverableImage(props){
     )
 }
  function Villes(props) {
+   
      const ENDPOINT = baseUrl.lumen
      const [villes, setVilles] = useState([])
     useEffect(() => {
+        let isSubscribed = true
+
         Axios.get(`${ENDPOINT}api/villes?app_key=base64:HWKowqxmoXiNlACwEpk+ZqDie3DAQgtqvUncFXotLy4=` , {headers: {'Content-Type': 'application/json'}})
         .then(res => {
-            setVilles(res.data)
+            if (isSubscribed) {
+                setVilles(res.data)
+              }
+            
         })
         .catch(error =>{ console.log("on n'a pas pus se connécter au serveur")})
-    
+
+        return () => {
+            // Do unmounting stuff here
+            isSubscribed = false
+        }
     }, [ENDPOINT]);
     return (
         <Container>

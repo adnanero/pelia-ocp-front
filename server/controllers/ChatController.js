@@ -1,56 +1,54 @@
 
-const { addUser, removeUser, getUsersInRoom,getNumber, changeTicket, getOther, getMedecinsOnligne, addTicket } = require('./users');
+const { addUser, removeUser,getNumber, changeTicket, addTicket } = require('./users');
 
 
 exports.chatMAnager = (io) => {
 
     io.on('connect', (socket) => {
         socket.on('join', ({ name, id, type}, callback) => {
-          const { error, user, tickets } = addUser({ socket_id: socket.id, name, id, type });
-          if(error) return callback({error: true, tickets, message:error});
+          const { error, user, tickets, ticket, medecinsOnligne } = addUser({ socket_id: socket.id, name, id, type });
+          
+          if(error) return callback({error: true, message:error});
+
           socket.join(id);
-          const medecins = getMedecinsOnligne();
           if(user.type === "medecin"){
-            io.emit('medecin-switch', { medecins :{users: medecins } });
+            io.emit('medecin-switch', {  medecinsOnligne, type: "conected"});
+            callback({error:false, tickets});
+          }else{
+            callback({error:false, ticket, medecinsOnligne});
           }
-          callback({error:false, medecins});
+          
         });
 
         socket.on('add-tickets', ({medecin, user}, callback) => {
-          const { error, message, nombre, tickets } = addTicket({ medecin, user, socket_id: socket.id });
-
-          io.to(medecin.id).emit('switch-patient', { tickets, type:"connect" });
-          
-          callback({error, message, nombre});
+          const { error, message, nombre, tickets, ticket } = addTicket({ medecin, user, socket_id: socket.id });
+          io.to(medecin.id).emit('switch-patient', { tickets, type:"conected" });
+          callback({error, message, nombre, ticket});
         }); 
         socket.on('switch-ticket', ({ selectedUser, type, medecin }, callback) => {
           
           if(selectedUser === undefined) return callback({error: true, message: "aucun utilisateur choisit"});
-          const response = changeTicket({ selectedUser, type, medecin, socket_id: socket.id });
-          if(!response) return{error:true}
+          const {ticket, tickets, patient} = changeTicket({ selectedUser, type, medecin, socket_id: socket.id });
+          if(ticket === undefined) return{error:true, ticket: {}}
           if(type === "ready"){
-
-            io.to(medecin.id).emit('switch-patient', { tickets:response.tickets , type:"ready"});
-            return callback({send: true});
+            io.to(medecin.id).emit('switch-patient', { tickets, ticket , type:"ready"});
+            return callback({send: true, tickets, ticket});
           }
-          else if(type === "debut"){
-            
-             io.to(response.patient.id).emit('ticket-switch', { type  });
+          else if(type === "debut"){ 
+             io.to(patient.id).emit('ticket-switch', { type ,tickets, ticket });
           }
           else if(type === "fin"){
-            io.to(response.patient.id).emit('ticket-switch', { type ,tickets: response.tickets });
-            // let number = getNumber({medecin, socket_id:socket.id})
-            // io.emit('number-switch', {number, medecin})
+            io.to(patient.id).emit('ticket-switch', { type ,tickets, ticket });
          }
          else if(type === "attente"){
-            io.to(response.patient.id).emit('ticket-switch', { type  });
+            io.to(patient.id).emit('ticket-switch', { type, tickets, ticket  });
+        }else if (type === "delete") {
+          io.to(selectedUser.id).emit('ticket-switch', { type, tickets, ticket: {}  });
         }
-        return callback({error: false, tickets: response.tickets});
+
+        return callback({error: false, ticket, tickets});
 
         }); 
-
-      
-
         socket.on('sendMessage', ({message, selectedUser, user}, callback) => {
                 
           // if(message){
@@ -60,10 +58,10 @@ exports.chatMAnager = (io) => {
           // }
         
         }); 
-        socket.on('call-patient', ({selectedUser, type}) => {               
+      socket.on('call-patient', ({selectedUser, type}) => {               
             io.to(selectedUser.id).emit('call-entring', { type });
         }); 
-        socket.on('patient-ready', ({selectedUser}) => {               
+      socket.on('patient-ready', ({selectedUser}) => {               
           io.to(selectedUser.id).emit('ready-patient', { });
       }); 
       socket.on('client-call', ({selectedUser}) => {               
@@ -83,17 +81,16 @@ exports.chatMAnager = (io) => {
       }); 
       
         socket.on('disconnect', (reason) => {
-          const users = removeUser(socket.id);
-          if(users){
-
-            if(users.type == "medecin"){
-              io.emit('medecin-switch', { medecins: users, reason });
+          const {user, type, message, error, medecinsOnligne, tickets} = removeUser(socket.id);
+          if(!error){
+            if(type == "medecin"){
+              
+              io.emit('medecin-switch', { medecinsOnligne, type: "disconnected", reason });
           }else{
-              io.to(users.id_medecin).emit('switch-patient', { tickets:users.tickets, id_user_deleted: users.id_user_deleted , type:"disconnect", reason});
+            
+            io.to(user.id).emit('switch-patient', { tickets, user , type:"disconnect", reason});
           }
-
           }
-          
         })
       });
       

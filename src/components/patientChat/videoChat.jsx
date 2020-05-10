@@ -43,7 +43,6 @@ export default class ElemenetsCall extends Component {
         socket.emit('patient-ready', {selectedUser: this.state.medecin} )
         
         socket.on('patient-call', (response) => {
-            // console.log(response)
             this.setState({ isCalling: true});
         })
         socket.on('reject-call-patient', (response) => {
@@ -57,8 +56,6 @@ export default class ElemenetsCall extends Component {
            });
         })
         socket.on('patient-signal-call', ({data}) => {
-            // console.log(response)
-            // this.setState({ isCalling: true});
             this.setState({responding: true})
             this.state.peer.signal(data);
         })
@@ -90,20 +87,15 @@ export default class ElemenetsCall extends Component {
                         let videoStream = new MediaStream(stream.getVideoTracks(), options);
                         try {
                             this.myVideo.srcObject = videoStream;
-
                         } catch (e) {
                             this.myVideo.src = URL.createObjectURL(videoStream)
-
                         }
-                        // si c'est un patient qui reçoit l'appel on débute le caller tone
-                  
                         try {
                             this.callerTone.src = callerTone
                         } catch (e) {
                             this.callerTone.srcObject =  URL.createObjectURL(callerTone) 
                         }
                         this.callerTone.play();
-                    
                 })
                 .catch(err => {
                     console.log(`Unable to fetch stream`)
@@ -121,7 +113,6 @@ export default class ElemenetsCall extends Component {
     }
 
     stopStream() {
-        
         if (!window.streamReference) return;
         window.streamReference.getAudioTracks().forEach( (track) => {
             track.stop();
@@ -155,29 +146,29 @@ export default class ElemenetsCall extends Component {
         this.props.socket.emit('confirm-call', {selectedUser: this.state.medecin, data })
     })
 
-        peer.on('stream', (stream) => {
-            if(this.props.type === "video"){
-                try {
-                    this.userVideo.srcObject = stream;
-                } catch (e) {
-                    this.userVideo.src = URL.createObjectURL(stream)
-                }
-                this.userVideo.play();
-            }else{
-                try {
-                    this.userAudio.srcObject = stream;
-                } catch (e) {
-                    this.userAudio.src = URL.createObjectURL(stream)
-                }
-                this.userAudio.play();
-            }
-            if(stream !== null){
-                this.setState({passingCall: true, respondingProcess:false, timeAppel: Date.now() })
-            }
-        })
-     
-        this.setState({ respondingProcess: true, peer});
+    peer.on('stream', (stream) => {
         this.callerTone.pause();
+        if(this.props.type === "video"){
+            try {
+                this.userVideo.srcObject = stream;
+            } catch (e) {
+                this.userVideo.src = URL.createObjectURL(stream)
+            }
+            this.userVideo.play();
+        }else{
+            try {
+                this.userAudio.srcObject = stream;
+            } catch (e) {
+                this.userAudio.src = URL.createObjectURL(stream)
+            }
+            this.userAudio.play();
+        }
+        if(stream !== null){
+            this.setState({passingCall: true, respondingProcess:false, timeAppel: Date.now() })
+        }
+    })
+    this.setState({ respondingProcess: true, peer});
+    
     }
 
     rejectCall(){

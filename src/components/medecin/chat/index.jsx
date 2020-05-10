@@ -42,37 +42,36 @@ const Chat = () => {
     socket.emit('join',  userSocket , (response) => {
       if(response.error) {
         alert(response.message);
+      }else{
+        console.log(response.tickets)
+        setTickets(response.tickets)
       }
+      
     });
+    socket.on("switch-patient", (response) => {
 
-  }, [ENDPOINT]);
-  
-  useEffect(() => {
-   
+      if(response.type === "disconnect"){
+        if(tickets[selectedUser] !== undefined){
+           if(response.id_user_deleted === tickets[selectedUser]['id']){
+            setConsulting(false)
+            setMessages([])
+          }
+        }
+        console.log(response.tickets)
+        setTickets(response.tickets)
+      }else{
+        console.log(response.tickets)
+        setTickets(response.tickets)
+      }
+     
+    });
     socket.on('message', (message) => {
       setMessages(messages => [ ...messages, message ]);
     });
 
-    
-}, []);
-useEffect(() => {
-  socket.on("switch-patient", (response) => {
 
-    if(response.type === "disconnect"){
-      if(tickets[selectedUser] !== undefined){
-         if(response.id_user_deleted === tickets[selectedUser]['id']){
-          setConsulting(false)
-          setMessages([])
-        }
-      }
-        (response.tickets !== undefined)? setTickets(response.tickets) : setTickets([])
-      
-    }else{
-      (response.tickets !== undefined)? setTickets(response.tickets) : setTickets([])
-    }
-   
-  });
-}, [selectedUser]);
+  }, [ENDPOINT]);
+  
 
 const passingConsulting = () => {
   // let index = tickets.findIndex((user) =>  user.status === 1)
@@ -86,6 +85,7 @@ const passingConsulting = () => {
       if(response.tickets === undefined){
         response.tickets = []
       }
+      console.log(response.tickets)
       setTickets(response.tickets)
     }
   });
@@ -99,6 +99,7 @@ const passingConsulting = () => {
           response.tickets = []
         }
         setMessages([])
+        console.log(response.tickets)
         setTickets(response.tickets)
       }
     });
@@ -112,6 +113,7 @@ const passingConsulting = () => {
           response.tickets = []
         }
         setMessages([])
+        console.log(response.tickets)
         setTickets(response.tickets)
       }
     });
@@ -148,10 +150,10 @@ const passingConsulting = () => {
   return (
       <div className="chat">
         <Row className="justify-content-around ">
-          <Col lg="10">
+          <Col lg="10" className = "bg-white p-0 discussion-container">
           <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} />
-          <Row className="discussion m-0 bg-white">
-          <Col lg="4">
+          <Row className="discussion m-0">
+          <Col lg="4" className="p-0">
           <UsersOnline
             tickets={tickets} 
             nmbr_ticket={nmbr_ticket} 
@@ -167,7 +169,7 @@ const passingConsulting = () => {
           />
         </Col>
         { onConsuting ?
-          <Col lg="8" className="chat-messages">
+          <Col lg="8" className="chat-messages p-0">
           
           <Messages messages={messages} user={user} />
           <SendMessageForm message={message} setMessage={setMessage} sendMessage={sendMessage} />

@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, Row, Col} from 'react-bootstrap'
 import {FaPhoneSlash, FaCheck} from 'react-icons/fa'
 
-import callerTone from './../../../assets/media/callertone.mp3'
+import callerTone from './../../../assets/media/ringPhone.mp3'
 
 
 export default class ElemenetsCall extends Component {
@@ -105,8 +105,8 @@ export default class ElemenetsCall extends Component {
                 }
                 this.userAudio.play();
             }
-            
-                this.setState({passingCall: true, respondingProcess:false, timeAppel: Date.now() })
+            this.callerTone.pause();
+            this.setState({passingCall: true, respondingProcess:false, timeAppel: Date.now() })
             
         })
         peer.on('close', () =>{
