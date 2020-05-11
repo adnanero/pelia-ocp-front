@@ -5,6 +5,7 @@
   height: 100vh;
   background-color: #1A1A1D;
 } */
+
 .medecin-site .chat {
   margin-top: 7rem;
 }
@@ -14,9 +15,11 @@
   background-color: #038dfe;
   color: #fff;
   width: 100px;
+  cursor: pointer;
 }
 .discussion-container{
   border-radius: 0 0 15px 15px;
+  box-shadow: 0 20px 20px rgba(54, 149, 235, 0.5);
 }
 .chat {
     border-radius: 8px;
@@ -24,12 +27,14 @@
   }
   .discussion{
     height: 70vh;
-    border: 1px solid #038dfe;
+    border: 1.2px solid #038dfe;
     border-radius:  0 0 15px 15px;
+    z-index: 9999;
   }
   
   .chat-messages {
     height: 100%;
+    border-radius: 0 0 15px 15px;
   }
   /* @media (min-width: 320px) and (max-width: 480px) {
     .outerContainer {
@@ -55,14 +60,13 @@
     border-radius: 4px 4px 0 0;
     width: 100%;
     padding-right: 15px;
-    box-shadow: 0 20px 20px rgba(54, 149, 235, 0.5);
 
   }
   .infoBar .action{
     border-radius: 50%;
-    margin-left: .4rem;
-    margin-right: .5rem;
-    padding: 20px;
+    /* margin-left: .4rem;
+    margin-right: .5rem; */
+    padding: 18px;
     opacity: 1;
 }
 .infoBar .video-call .action{
@@ -146,6 +150,7 @@
  
   .messages .messageContainer.replies .messageText {
     background: #f5f5f5;
+    text-align:left;
   }
   
   
@@ -168,12 +173,13 @@
   
   }
   .discussion .messageForm{
-    background-color:#f0f0f0;
+    background-color:rgb(230, 228, 228);
     padding: 12px 0px;
     position: absolute;
-    width: 100%;
-    bottom: 0px;
-    border-radius: 0 0 13px 0;
+    width: calc(100% - 1px);
+    bottom: 0.8px;
+    right: 0.8px;
+    border-radius: 0 0 15px 0;
   }
   .discussion .chatContainer .inputChat {
     font-family: "Poppins";
@@ -215,9 +221,7 @@
     .discussion .chatContainer .inputChat {
       padding: 15px 32px 16px 8px;
   }
-    .discussion .chatContainer .SendMsgBtn {
-        padding: 16px 0;
-    }
+ 
   }
   
   
@@ -242,7 +246,7 @@
     align-items: center;
 }
  .infoBar .profile img {
-    width: 50px;
+    width: 70px;
     border-radius: 50%;
     padding: 3px;
     border: 2px solid #038dfe;
@@ -406,4 +410,235 @@
 
 ul{
     list-style: none;
-}      
+}  
+.makeStyles-wrapper-1{
+  margin: 0 !important;
+}    
+
+
+
+figure {
+	position: relative;
+	float: left;
+  overflow: hidden;
+  width: 100%;
+	/* height: 100%; */
+	text-align: center;
+ 
+  border-radius: 45%;
+  -webkit-box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);
+  -moz-box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);
+  box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);}
+
+figure img {
+	position: relative;
+	display: block;
+	min-height: 100%;
+	min-width: 100%;
+	opacity: 0.8;
+}
+
+figure figcaption {
+    position: absolute; 
+    top: 0;  
+    height: 100%; 
+    width:100%;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 1.25em;
+  -webkit-Sbility: hidden;
+  cursor: pointer;
+}
+figure figcaption.offline {
+cursor: not-allowed;
+}
+
+figure figcaption::before,
+figure figcaption::after {
+	pointer-events: none;
+}
+
+
+figure figcaption .layer{
+    width:100%;
+    height:100%; 
+    position:absolute;
+    background:#038DFE;
+    opacity:0.4;
+    -webkit-transition: opacity 0.35s;
+	transition: opacity 0.35s;
+}
+
+.medecin figure figcaption {
+ 
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+.medecin figure h5 {
+  color: #000;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 12px 30px;
+  background-color: #fff;
+  margin: 0;
+  border-radius: 50% 50% 0 0;
+}
+.medecin figure figcaption.onligne h5 {
+  color: #5cb85c;
+  border: 1px solid #5cb85c;
+}
+.medecin figure figcaption.offline h5 {
+  color: #d9534f;
+  border: 1px solid #d9534f;
+}
+.medecin figure .status {
+  border : 0px;
+  /* display: inline-block; */
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin: 1rem;
+  /* max-width: 50%; */
+  -webkit-transition: all 0.35s ease-in-out;
+	transition: all 0.35s ease-in-out;
+}
+
+.medecin figure .status.onligne {
+  border: 3px solid #5cb85c;
+  color:#5cb85c;
+  
+
+}
+.medecin figure .status.offline {
+  border: 3px solid #d9534f;
+  color: #d9534f;
+}
+
+figure.effect-apollo {
+	background: #038DFE;
+}
+
+figure.effect-apollo img {
+	opacity: 0.95;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: scale3d(1.05,1.05,1);
+	transform: scale3d(1.05,1.05,1);
+}
+
+figure.effect-apollo figcaption::before {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(255,255,255,0.5);
+	content: '';
+	-webkit-transition: -webkit-transform 0.6s;
+	transition: transform 0.6s;
+	-webkit-transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,-100%,0);
+	transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,-100%,0);
+}
+
+figure.effect-apollo:hover img {
+	opacity: 0.6;
+	-webkit-transform: scale3d(1,1,1);
+	transform: scale3d(1,1,1);
+}
+
+figure.effect-apollo:hover figcaption::before {
+	-webkit-transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,100%,0);
+	transform: scale3d(1.9,1.4,1) rotate3d(0,0,1,45deg) translate3d(0,100%,0);
+}
+
+figure.effect-apollo:hover figcaption .layer{
+opacity: 0;
+transition-delay: 0.1s;
+}
+figure.effect-apollo h5 {
+	text-align: center;
+    opacity: 1;
+    z-index: 99;
+    font-weight: 300;
+    margin: 0;
+ 
+}
+figure p {
+	text-align: center;
+    opacity: 1;
+    z-index: 99;
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    margin: 0;
+
+}
+figure.effect-apollo:hover h5 {
+  padding:  1em 0;
+ 
+	border-bottom: 4px solid #fff;
+}
+
+.villes-enter {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  .villes-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+    transition-delay: 0.1s;
+  }
+  .villes-exit {
+    opacity: 1;
+  }
+  .villes-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+
+  }
+
+  .medecins-enter {
+    opacity: 0;
+    transform: scale(0.9);
+
+  }
+  .medecins-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+    transition-delay: 0.1s;
+
+  }
+  .medecins-exit {
+    opacity: 1;
+  }
+  .medecins-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+  }
+
+  .chat-enter {
+    opacity: 0;
+    transform: scale(0.9);
+
+  }
+  .chat-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+    transition-delay: 0.1s;
+
+  }
+  .chat-exit {
+    opacity: 1;
+  }
+  .chat-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+  }
+  

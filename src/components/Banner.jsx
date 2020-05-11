@@ -4,8 +4,8 @@ import React,{useState} from 'react';
 import BannerAnim from 'rc-banner-anim';
 import TweenOne from 'rc-tween-one';
 
-import PeliaBanner from './../assets/img/pelia_banner.jpg'
-
+import PeliaBanner from './../assets/img/pelia_banner.svg'
+import {Link} from "react-router-dom"
 import Cookies from 'js-cookie'
 
 
@@ -95,9 +95,13 @@ function VideoShow(props) {
                         className="wow bounceInDown animated" 
                         style={{color:'white'}}
                     >
-                      <span className="bannerPelia mb-2" style={{fontFamily:'Pacifico',fontSize:'60px'}} >Pelia</span>
+                      <span className="bannerPelia mb-2" style={{fontFamily:'Pacifico',fontSize:'60px'}} >Pelia.ma</span>
                       {content.title[props.elm][lang]}
                     </h1>
+	    		<div className="call-to-action home-info">
+	    <Link data-wow-duration="500ms" to="/consultation" className="btn inscription-btn smoothScroll text-white wow slideInUp animated"> <span className="btn_consultation"> {content.demarrer[lang]}</span> </Link>
+	    	
+	    </div>
               </div>
         </div>
     </div>
@@ -119,5 +123,6 @@ const content ={
 ],
     button: {ar:"ابدأ المغامرة", fr:"Commencer"},
     video:{ar: "شاهد الفيديو التوضيحي", fr:"Regarder la vidéo descriptive"},
-    amuser:{ar:"مشاهدة ممتعة", fr:"Vision agréable !"}
+    amuser:{ar:"مشاهدة ممتعة", fr:"Vision agréable !"},
+    demarrer:{ar:"إبدأ الإستشارة عن بعد", fr:"Démarrer la téléconsultation"}
 }

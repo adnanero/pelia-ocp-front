@@ -8,7 +8,6 @@ import {BsCircleFill} from 'react-icons/bs';
 import {FaArrowLeft} from 'react-icons/fa';
 
 import ContactBanner from './../assets/img/contact.png'
-import './consultation.css'
 import benguerir from './../assets/img/villes/benguerir.jpg'
 import casablanca from './../assets/img/villes/casablanca.jpg'
 import eljadida from './../assets/img/villes/eljadida.jpg'
@@ -25,6 +24,7 @@ import Banner from './../components/BannerSimple'
 
 import ChatPAtient from './../components/patientChat/index'
 import VideoCall from './../components/patientChat/videoChat'
+import Feedback from './../components/patientChat/feedback'
 import { CSSTransition } from 'react-transition-group';
 
 let lang = Cookies.get('lang')
@@ -83,6 +83,7 @@ export default function Home() {
         }else{
             setMedecinsOnligne(response.medecinsOnligne)
             setTicket(response.ticket)
+            setMedecin(response.medecin)
         }
       });
 
@@ -127,7 +128,7 @@ export default function Home() {
     const addTicket = (medecin) => {
         socket.emit('add-tickets',  {medecin, user : user} , (response) => {
             if(response.error) {
-              console.log(response.message);
+
             }else{
                 setNumber(response.nombre)
                 setTicket(response.ticket)
@@ -148,66 +149,110 @@ export default function Home() {
         }
     }
    
-    if(inCall === "video" || inCall === "audio"){
-        return (
-            <VideoCall socket={socket} medecin={medecin} patient={user} type={inCall} setInCall={setInCall} />
-        )
-    }
-    console.log(ticket)
+    
     return (
 
         <div className="page">
             <Banner title={content.title[lang]} subtitle={content.subtitle[lang]} style={{color:'white'}} banner={ContactBanner}  />
             {
-                    ticket.name === user.name ?  
-                    <Container>
-                        <Chat
-                            setMessage={setMessage} 
-                            messages={messages} 
-                            message={message}  
-                            medecin={medecin} 
-                            user={user} 
-                            sendMessage={sendMessage}
-                            socket={socket}
-                            ticket={ticket}
-                            setTicket={setTicket}
-                        />
-                    </Container>                      
-                   
-                    :
-                    <Container className="mt-5"> 
-                    <CSSTransition
-                        in={showVilles}
-                        timeout={300}
-                        classNames="villes"
-                        unmountOnExit >
-                            <Villes setVille={setVille} />
-                    </CSSTransition>
-                    <CSSTransition
-                        in={showMedecins}
-                        timeout={300}
-                        classNames="medecins"
-                        unmountOnExit >
-                            <ListeMedecin addTicket={addTicket} medecinsOnligne={medecinsOnligne} setshowMedecins={setshowMedecins} setMedecin={setMedecin} ville={ville} setShowVille={setShowVille} />
-                    </CSSTransition>
-                </Container>
-                }
+                ticket.name === user.name ?  
+                <Container className = "mt-5">
+                    <Ticket
+                        setMessage={setMessage} 
+                        messages={messages} 
+                        message={message}  
+                        medecin={medecin} 
+                        user={user} 
+                        sendMessage={sendMessage}
+                        socket={socket}
+                        ticket={ticket}
+                        setInCall={setInCall}
+                        setTicket={setTicket}
+                        inCall={inCall}
+                        medecinsOnligne={medecinsOnligne}
+                        setshowVilles={setshowVilles}
+                    />
+                </Container>                      
+                
+                :
+                <Container className="mt-5"> 
+                <CSSTransition
+                    in={showVilles}
+                    timeout={300}
+                    classNames="villes"
+                    unmountOnExit >
+                        <Villes setVille={setVille} />
+                </CSSTransition>
+                <CSSTransition
+                    in={showMedecins}
+                    timeout={300}
+                    classNames="medecins"
+                    unmountOnExit >
+                        <ListeMedecin addTicket={addTicket} medecinsOnligne={medecinsOnligne} setshowMedecins={setshowMedecins} setMedecin={setMedecin} ville={ville} setShowVille={setShowVille} />
+                </CSSTransition>
+            </Container>
+            }
            
         </div>
     )
 }
 
-function Chat(props){
+function Ticket(props){
     const [ready, setReadys] = useState(false)
+    const [medecinHorsLigne, setMedecinHorsLigne]= useState(false)
+    const [idTicket, setIdTicket] = useState(null)
     const setReady = () => {
         props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"ready", medecin : props.medecin});
         setReadys(true)
     }
+    useEffect(() => {
+        let thisMedecin = props.medecinsOnligne.find((med) => med.id === props.medecin.id);
+        if (thisMedecin === undefined){
+            setMedecinHorsLigne(true);
+        }else{
+            if(thisMedecin.state === "disconnected"){
+                setMedecinHorsLigne(true);
+            }else{
+                if (medecinHorsLigne) {
+                    setMedecinHorsLigne(false);
+                }
+            }
+        }
+    })
+    const saveTicket = () => {
+        let datetime = Date.now() - this.state.timeAppel;
+        datetime = datetime.toString();
+       Axios.post(`${baseUrl.lumen}api/ticket` , {datetime: datetime, id_medecin : props.medecin.id}, {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            setIdTicket(res.id_appel);
+       });
+    }
 
     const deleteTicket = () => {
         props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} )
+        props.setshowVilles(true)
     }
-    if(props.ticket.status === -1){
+
+    const finTicket  = () => {
+        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} )
+        props.setshowVilles(true)
+        // finTicket
+    }
+    if( props.inCall === "video" || props.inCall === "audio"){
+        return (
+            <VideoCall idTicket={idTicket} socket={props.socket} medecin={props.medecin} patient={props.user} type={props.inCall} setInCall={props.setInCall} />
+        )
+    }
+
+    else if(medecinHorsLigne){
+        return (
+            <div>
+                Ce médecin est hors ligne
+                <button className="btn btn-primary" onClick={deleteTicket}> je veux plus attendre ce médecin </button>
+            </div>
+        )
+    }
+    else if(props.ticket.status === -1){
        return(
         <div>
             <ChatPAtient 
@@ -217,6 +262,7 @@ function Chat(props){
                 message={props.message} 
                 messages={props.messages}
                 sendMessage={props.sendMessage}
+                idTicket={idTicket}
             />
         </div>
     ) 
@@ -224,14 +270,21 @@ function Chat(props){
     }
     else if (props.ticket.status === 0){
         return(
-            <Lobby medecin={props.medecin} number={props.number} deleteTicket={deleteTicket} user={props.user}  />
-
+            <div>
+            <h4>Bienvenue au lobby </h4>
+            <h5>Vous êtes maintenant au queue d'attente du médecin {props.medecin.nom} votre tours viens après {props.number} personne. Chaque personne prend génèralement 5 à 10 minute </h5>
+            <p>Quand votre tours vas arriver vous passez directement en discusion avec votre mèdecins</p>
+            <div className="col text-center mt-4 mb-5">
+            <button className="btn btn-primary" onClick={deleteTicket}> Je veux plus attendre ce médecin </button>
+            </div>
+        </div>
         )
     }
     else if(props.ticket.status === -2){
         return(
          <div>
-             fin de la discussion avec votre médecin
+             Fin de la discussion avec votre médecin
+             <Feedback finTicket={finTicket} id_ticket ={idTicket} />
          </div>
      ) 
  
@@ -255,17 +308,6 @@ function Chat(props){
     
 }
 
-function Lobby (props){
-
-    return(
-        <div>
-            <h4>bienvenue au lobby </h4>
-            <h5>vous êtes maintenant au queue d'attente du médecin {props.medecin.nom   } votre tours viens après {props.number} personne. Chaque personne prend génèralement 5 à 10 minute </h5>
-            <p>quand votre tours vas arriver vous passez directement en discusion avec votre mèdecins</p>
-            <button className="btn btn-primary" onClick={props.deleteTicket}> je veux plus attendre ce médecin </button>
-        </div>
-    )
-}
 
 
 function ListeMedecin(props){
@@ -301,19 +343,19 @@ function ListeMedecin(props){
            
         let medecinDiv = event.currentTarget
         let paragraphe = medecinDiv.querySelector(".p")
-        paragraphe.innerText = 'vous pouvez joindre ce médecin'
+        paragraphe.innerText = 'Ce médecin est hors ligne'
     }
     
    }
     return(
-        <Container>
-             <div className="retour-ville"> <span onClick={ () => props.setShowVille("")}> <FaArrowLeft color="#fff" /> retour </span>  </div>
+        <Container className="mt-5">
+             <div className="retour-ville"> <span onClick={ () => props.setShowVille("")}> <FaArrowLeft color="#fff" /> Retour </span>  </div>
         <Row>
             {
                 medecins.map((medecin, index) =>
                 <Col lg="4" key={index} className="my-3">
                     <div onClick={ (e) => handleClick(medecin, e)} className={medecin.onligne ? "medecin onligne" : "medecin offligne"} >
-                        <HoverableImage onligne={medecin.onligne} name={"dr. "+ medecin.nom + " " + medecin.prenom} image={medecine} />
+                        <MedecinImage onligne={medecin.onligne} name={"docteur "+ (index + 1)} image={medecine} />
                     </div>
                 </Col>
                 )
@@ -322,16 +364,33 @@ function ListeMedecin(props){
     </Container>
     )
 }
-function HoverableImage(props){
+
+
+function MedecinImage(props){
     return(
-        <figure className="effect-apollo">
-        <img src={props.image} />
-        <figcaption>
-            <div className="layer"></div>
+        <figure style={{  background: "#038DFE"  }} className="">
+        <img src={props.image} alt={props.name} />
+        <figcaption className={props.onligne ? "onligne": "offline"}>
             <div className={props.onligne ? "onligne status": "status offline"}>
                 <BsCircleFill color={props.onligne ? "#5cb85c": "#d9534f"} />
     <span>{ props.onligne? "en ligne": "hors ligne"}</span>
             </div>
+            <p className="p">{props.subtitle}</p>
+            <div className="d-flex flex-column justify-content-end align-items-center h-100">
+                <h5 className="">{props.name}</h5>
+                
+            </div> 
+        </figcaption>
+    </figure>
+    )
+}
+
+function HoverableImage(props){
+    return(
+        <figure className="effect-apollo">
+        <img src={props.image} alt={props.name} />
+        <figcaption>
+            <div className="layer"></div>
             <p className="p">{props.subtitle}</p>
             <div className="d-flex flex-column justify-content-center align-items-center h-100">
                 <h5 className="text-white">{props.name}</h5>
@@ -355,7 +414,7 @@ function HoverableImage(props){
               }
             
         })
-        .catch(error =>{ console.log("on n'a pas pus se connécter au serveur")})
+        .catch(error =>{ console.log("On n'a pas pus se connécter au serveur")})
 
         return () => {
             // Do unmounting stuff here
@@ -368,9 +427,9 @@ function HoverableImage(props){
                 {
                     villes.map((ville, index) =>
                     <Col lg="4" key={index} className="my-3">
-                        <a onClick={ () => props.setVille(ville.id)} className="ville" >
+                        <div onClick={ () => props.setVille(ville.id)} className="ville" >
                             <HoverableImage name={ville.nom_ville} image={imageVilles[ville.id -1]} />
-                        </a>
+                        </div>
                     </Col>
                     )
                 }
@@ -379,7 +438,7 @@ function HoverableImage(props){
     )
 }
 let content = {
-    title:{fr:"consultation en ligne",ar:"اتصل بنا"},
-    subtitle:{fr:"choisir votre ville de résidence ensuite votre médecin et attendez votre tours", 
-        ar:"سواء كان لديك سؤال حول الميزات أو التجارب أو الأسعار أو تحتاج إلى عرض توضيحي أو أي شيء آخر ، فإن فريقنا على استعداد للإجابة على جميع أسئلتك"}
+    title:{fr:"Consultation en ligne",ar:"الإستشارة عن بعد"},
+    subtitle:{fr:"Choisir votre ville de résidence ensuite votre médecin et attendez votre tours", 
+        ar:"أختر المدينة التي تقطن فيها و بعد ذلك الطبيب الذي تريد أن تستشيره و انتظر دورك"}
 }

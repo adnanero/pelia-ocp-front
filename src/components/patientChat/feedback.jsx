@@ -5,7 +5,7 @@ import InputIcone from './../Inputs/InputIcone/index';
 import Axios  from 'axios';
 
 import {FaPaperPlane} from 'react-icons/fa'
-import { Col, Collapse, Alert } from 'react-bootstrap';
+import { Col, Row, Collapse, Alert } from 'react-bootstrap';
 import ButtonSubmit from './../Button/index';
 import baseUrl from './../../config'
 
@@ -51,7 +51,6 @@ const Emoticones =( props ) =>
         "M18.8284271,21.8284271 C20.1906345,20.4662198 20.3649459,18.3659485 19.3513614,16.8148522 C19.2026284,16.5872449 19.0283169,16.3714627 18.8284271,16.1715729 C17.9983168,15.3414625 16.8941253,14.9524791 15.8071502,15.0046227 C14.9879477,15.0439209 14.1785241,15.3337764 13.5035752,15.8741891 C13.3888159,15.9660737 13.2779442,16.0652016 13.1715729,16.1715729 C12.2247147,17.118431 11.8517904,18.4218859 12.0527998,19.6496386 C12.1834095,20.4473941 12.5563339,21.2131881 13.1715729,21.8284271 C14.73367,23.3905243 17.26633,23.3905243 18.8284271,21.8284271 Z"
     ]
     } 
-
     return(
         <svg width="100%" height="100%" viewBox="0 0 50 50">
             <path d="M50,25 C50,38.807 38.807,50 25,50 C11.193,50 0,38.807 0,25 C0,11.193 11.193,0 25,0 C38.807,0 50,11.193 50,25" className="base" fill= {props.color}  ></path>
@@ -107,17 +106,24 @@ const SectionRepeat =(props) => {
   const [newRating, setNewRating] = useState(3) 
   const [suggestion, setSuggestion] = useState("")
   const [isSend, sentIsSend] = useState(false)
-
+    const [sending, setSending] = useState(false)
+  const [success, setSuccess] = useState(false)
   const handleSubmit = (e) => {
     e.preventDefault()
     let rating = newRating.toString();
-  
+    setSending(true)
     Axios.post(`${baseUrl.lumen}api/feedback` , {id_appel: props.id_appel , rating: rating, suggestion: suggestion}, {headers: {'Content-Type': 'application/json'}})
     .then(res => {
-        sentIsSend(true)
+        setSending(false)
+        setSuccess(true)
         setSuggestion("")
+        setTimeout(() => {
+            sentIsSend(true)
+        }, 1000);
+        
     })
     .catch((error) =>{
+        setSending(false)
         sentIsSend(false)
     })
   }
@@ -127,22 +133,25 @@ const SectionRepeat =(props) => {
                       <div id="example-collapse-text">
                       <form onSubmit={handleSubmit}>
                 <div className="feedback-container">
-                    <h1>Comment c'est passer votre appel?</h1>
+                    <h1>Comment c'est passer votre consultation ?</h1>
                     <SectionRepeat newRating={newRating} setNewRating={ (newRate) => setNewRating(newRate)} />
                 </div>
-                <div>
+                <Row className="justify-content-around text-center">
                     <InputIcone
                         label="comment peut-on améliorer notre servie"
-                        InputLabelProps={{style:{marginBottom: "12px" }}}
+                        InputLabelProps={{style:{marginBottom: "12px", width: "150%" }}}
                         Icone={FaPaperPlane}
                         placeholder= "suggestion ..."
                         name="suggestion"
                         value={suggestion}
                         onChange={ (event) => setSuggestion(event.target.value) } 
                     />
-                    <ButtonSubmit />
-
-                </div>
+                    </Row>
+                    <Row className="justify-content-around my-5">
+                        <ButtonSubmit success={success} type="submit" sending={sending} valeur= "Enregistrer" />
+                        <button onClick={props.finTicket} className="btn btn-primary p-0"> Annuler </button>
+                    </Row>
+                
             </form>
                       </div>
                   </Collapse>
@@ -155,6 +164,5 @@ const SectionRepeat =(props) => {
                   </Collapse>
         </Col>
     )
-    
 }
 export default Feedback

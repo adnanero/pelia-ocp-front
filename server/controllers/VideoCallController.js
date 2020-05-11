@@ -1,6 +1,5 @@
 const UsersModel = require('./../models/user');
 
-var Pusher = require('pusher');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -53,27 +52,6 @@ exports.auth= async (req, res, next) =>{
         });
 }
 
-exports.lanceVideocall = (req, res) => {
-    let { socket_id, channel_name } = req.body;
-    let pusher = new Pusher({
-        appId: '971546',
-        key: '2e923196325bd5eddb8c',
-        secret: 'bdd576d4771169113211',
-        cluster: 'eu',
-        encrypted: true,
-	    wsPort: 443,
-	    enabledTransports:['ws','wss']
-    });
-      var presenceData = {
-        user_id: req.session.id,
-        user_info: {
-	name: req.session.name,
-          userAuth: req.body.name
-        }
-      };
-      var auth = pusher.authenticate(socket_id, channel_name, presenceData);
-      res.status(200).json(auth)
-}
 
 exports.authPatient = (req, res) =>{
     const token = jwt.sign({

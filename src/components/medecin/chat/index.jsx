@@ -9,11 +9,19 @@ import VideoChat from './videoChat'
 import SendMessageForm from './sendingMessage/index';
 import { Redirect } from "react-router-dom";
 
+
 import baseUrl from './../../../config'
 
 
 let socket;
+const MedecinChat = () =>{
+  if(Cookies.get('user') === undefined){
+    return <Redirect to="/authentification" />
+  }else{
+    return <Chat />
+  }
 
+}
 
 const Chat = () => {
 
@@ -27,55 +35,55 @@ const Chat = () => {
   const [inCall, setInCall] = useState(false)
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
- 
+  const [showConversation, setShowConversation] = useState(false);
+
   const ENDPOINT = baseUrl.node;
- 
   useEffect(() => {
     socket = io(ENDPOINT);
     let userAuth ={};
     if(Cookies.get('user') !== undefined){
       userAuth = JSON.parse(Cookies.get('user'));
     }
-    let userSocket = {name: userAuth.nom + userAuth.prenom , id: userAuth.id, type: "medecin"}
+    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom,  id: userAuth.id, type: "medecin"}
     setUser(userSocket)
 
     socket.emit('join',  userSocket , (response) => {
       if(response.error) {
         alert(response.message);
       }else{
-        console.log(response.tickets)
         setTickets(response.tickets)
+        let index = response.tickets.findIndex((user) => ( user.status === -1)) 
+        if(index !== -1){
+          setSelectedUser(index);
+          setConsulting(true);
+        }
+        
       }
       
     });
     socket.on("switch-patient", (response) => {
-
       if(response.type === "disconnect"){
         if(tickets[selectedUser] !== undefined){
            if(response.id_user_deleted === tickets[selectedUser]['id']){
             setConsulting(false)
-            setMessages([])
           }
         }
-        console.log(response.tickets)
-        setTickets(response.tickets)
-      }else{
-        console.log(response.tickets)
-        setTickets(response.tickets)
       }
-     
+      setTickets(response.tickets)
     });
     socket.on('message', (message) => {
       setMessages(messages => [ ...messages, message ]);
+    });
+    socket.on('ticket-switch', (response) => {
+      setTickets(response.tickets)
     });
 
 
   }, [ENDPOINT]);
   
-
 const passingConsulting = () => {
   // let index = tickets.findIndex((user) =>  user.status === 1)
-  let index = tickets.findIndex((user) => user.status === 0) 
+  let index = tickets.findIndex((user) => (user.status === 0 || user.status === -1) && user.state === "conected"  ) 
   setSelectedUser(index);
 
    setConsulting(true)
@@ -85,7 +93,6 @@ const passingConsulting = () => {
       if(response.tickets === undefined){
         response.tickets = []
       }
-      console.log(response.tickets)
       setTickets(response.tickets)
     }
   });
@@ -99,7 +106,6 @@ const passingConsulting = () => {
           response.tickets = []
         }
         setMessages([])
-        console.log(response.tickets)
         setTickets(response.tickets)
       }
     });
@@ -113,7 +119,6 @@ const passingConsulting = () => {
           response.tickets = []
         }
         setMessages([])
-        console.log(response.tickets)
         setTickets(response.tickets)
       }
     });
@@ -125,11 +130,10 @@ const passingConsulting = () => {
       socket.emit('sendMessage', {message, selectedUser: tickets[selectedUser], user }, () => setMessage(''));
     }
   }
- 
-  if(Cookies.get('user') === undefined){
-    return <Redirect to="/authentification" />
+  const showConversationHandler = () => {
+    setShowConversation(!showConversation)
   }
-
+ 
   const audioCall = () => {
     setInCall("audio")
   }
@@ -147,11 +151,53 @@ const passingConsulting = () => {
       <VideoChat socket={socket} patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} medecinReady={medecinReady} />
     )
   }
+  if(window.innerWidth <= 768){
+
   return (
       <div className="chat">
         <Row className="justify-content-around ">
           <Col lg="10" className = "bg-white p-0 discussion-container">
-          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} />
+          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
+          <Row className="discussion m-0">        
+      {(onConsuting && showConversation) ?
+        <Col lg="8" className="chat-messages p-0">
+        
+        <Messages messages={messages} user={user} />
+        <SendMessageForm message={message} setMessage={setMessage} sendMessage={sendMessage} />
+      </Col>
+        : 
+        <Col lg="4" className="p-0">
+        <UsersOnline
+          tickets={tickets} 
+          nmbr_ticket={nmbr_ticket} 
+          setNombreTicket={setNombreTicket} 
+          selectedUser={selectedUser} 
+          resolved={resolved} 
+          setConsulting={setConsulting}  
+          onConsuting={onConsuting} 
+          metVeille={metVeille}
+          finishingConsult={finishingConsult}
+          passingConsulting={passingConsulting}
+          setResolved={setResolved}
+        />
+      </Col>
+      }
+      
+        </Row>
+        </Col>
+
+      
+      </Row> 
+    </div>
+  );
+  }
+  else{
+    return (          
+      <div className="chat">
+         <div className="chat">
+         <Row className="justify-content-around ">
+           <Col lg="10" className = "bg-white p-0 discussion-container">
+           <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
           <Row className="discussion m-0">
           <Col lg="4" className="p-0">
           <UsersOnline
@@ -186,7 +232,9 @@ const passingConsulting = () => {
         
         </Row> 
       </div>
+      </div>
+
   );
 }
-
-export default Chat;
+}
+export default MedecinChat;

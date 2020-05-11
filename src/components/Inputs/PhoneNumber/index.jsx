@@ -10,7 +10,6 @@ export default function PhoneField(props) {
 
     <TextField
     {...others}
-        id="standard-basic input-with-icon-textfield"
         width= "200"
         fullWidth
         type="text"

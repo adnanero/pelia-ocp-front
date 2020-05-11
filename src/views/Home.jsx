@@ -12,7 +12,7 @@ import {FaRegQuestionCircle} from 'react-icons/fa'
 import Telemecine from './../assets/img/telemedicine.png'
 
 import LogoPng from './../assets/img/pelia-logo.png'
-import PeliaBanner from './../assets/img/pelia_banner.jpg'
+import PeliaBanner from './../assets/img/pelia_banner.svg'
 
 
 import productFeature from './../assets/img/product-features.png'
@@ -23,7 +23,7 @@ import grossesse from './../assets/img/grossesse.png'
 import '../assets/css/style.css';
 import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
 
-
+import {Link } from 'react-router-dom'
 
 
 
@@ -62,7 +62,7 @@ function Quois(){
                     <img className="img1 img-fluid" src={Telemecine} alt="" />
                 </Col>
                 <Col lg={ {span: 5, offset: 1}}>
-                    <p className='colorBlack' style={style}>{HomeContent.quoi.body[lang]} </p>
+	    		<div dangerouslySetInnerHTML={{__html:HomeContent.quoi.body[lang]}}></div>
                 </Col>
             </div>
         </div>
@@ -85,7 +85,7 @@ function Comment(){
                                 icon={<FaRegQuestionCircle />}
                             >
                                 <h3 style={style} className="vertical-timeline-element-title">{HomeContent.comment.body.card1.title[lang]}</h3>
-                                <p style={style}className='colorBlack' >  {HomeContent.comment.body.card1.body[lang]} </p>
+                                <p dangerouslySetInnerHTML={{__html:HomeContent.comment.body.card1.body[lang]}} style={style}className='colorBlack'></p>
                             </VerticalTimelineElement>
 
                             <VerticalTimelineElement
@@ -98,7 +98,7 @@ function Comment(){
                                 icon={<IoIosTimer />}
                             >
                                 <h3 style={style} className="vertical-timeline-element-title">{HomeContent.comment.body.card2.title[lang]}</h3>
-                                <p style={style} className='colorBlack' >{HomeContent.comment.body.card2.body[lang]}</p>
+                                <p dangerouslySetInnerHTML={{__html:HomeContent.comment.body.card2.body[lang]}} style={style}className='colorBlack'></p>
                             </VerticalTimelineElement>
                             <VerticalTimelineElement
                                 className="vertical-timeline-element--work"
@@ -109,7 +109,7 @@ function Comment(){
                                 icon={<TiMessages />}
                             >
                                 <h3 style={style} className="vertical-timeline-element-title">{HomeContent.comment.body.card3.title[lang]}</h3>
-                                <p style={style} className='colorBlack'>{HomeContent.comment.body.card3.body[lang]}</p>
+                                <p dangerouslySetInnerHTML={{__html:HomeContent.comment.body.card3.body[lang]}} style={style}className='colorBlack'></p>
                             </VerticalTimelineElement>
                             <VerticalTimelineElement
                                 className="vertical-timeline-element--work"
@@ -166,12 +166,12 @@ function Objectifs (){
                         }</Row>
                     </Col>
                 </Row>
-                {/* <Row className="my-5 ">
+                <Row className="my-5 ">
                     <div className="call-to-action home-info">
-                    <Link data-wow-duration="500ms" data-wow-delay="200ms" to="/login" className="btn inscription-btn smoothScroll wow slideInUp animated"> <span> {HomeContent.objectifs.button[lang]} </span> </Link>
+                    <Link data-wow-duration="500ms" data-wow-delay="200ms" to="/consultation" className="btn inscription-btn smoothScroll wow slideInUp animated"> <span> {HomeContent.objectifs.button[lang]} </span> </Link>
 
                     </div>
-                </Row> */}
+                </Row> 
         </div>
     </section>
     )
@@ -182,8 +182,8 @@ let HomeContent = {
     quoi :{
         title:{fr:"Qu'est-ce que c'est ? " ,ar:"ما هذا ؟"},
         body:{
-            fr:"Pelia est une plateforme de téléconsultation médicale où vous pouvez rencontrer un médecin pour avoir une réponse, un conseil, un avis et un diagnostic médical si nécessaire, à portée de clic et sans avoir à se déplacer.",
-            ar:"هي منصة للاستشارات الطبية عن بعد. حيث يمكنك مقابلة الطبيب للحصول على استجابة ونصيحة ونصيحة وتشخيص طبي إذا لزم الأمر ، بنقرة واحدة فقط دون الحاجة إلى السفر."
+            fr:"<p>Pelia.ma est une plateforme de téléconsultation médicale où vous pouvez rencontrer un médecin pour avoir une réponse, un conseil, un avis et un diagnostic médical si nécessaire, à portée de clic et sans avoir à se déplacer</p>",
+            ar:"هي منصة للاستشارات الطبية عن بعد. حيث يمكنك مقابلة الطبيب للحصول على استجابة ونصيحة ونصيحة وتشخيص طبي إذا لزم الأمر ، بنقرة واحدة فقط دون الحاجة إلى التنقل."
         }
     },
     comment:{
@@ -193,24 +193,24 @@ let HomeContent = {
                 title:{fr:"Demander consultation" ,ar:"طلب استشارة"}, 
                 date:{fr:"Première étape", ar:"المرحلة الأولى"},
                 body :{
-                    fr:"Vous voulez savoir plus sur Pelia?  Comment en bénéficier ? Vous avez besoin de nous poser une question? Le numéro de téléphone 0662495329 est mis à votre disposition." ,
-                     ar:"هل تريد معرفة المزيد عن Pelia؟ كيف تستفيد منه؟ هل تريد أن تسألنا سؤالاً؟ رقم الهاتف 0662495329  متاح لك."
+                    fr:"<p>1- Premièrement assurez que vous avez déja Telegram sur votre téléphone, Si non vous pouvez le télécharger en cliquant sur ce lien : <a href='https://play.google.com/store/apps/details?id=org.telegram.messenger'>Télécharger Telegram </a> <br></br>2- Pour demander un consultation vous devez <a href='/consultation'>choisir une spécialité</a> et cliquer sur le boutton démarrer la consultation</p>" ,
+                     ar:"<p>تأكد أولاً من وجود تلغرام بالفعل على هاتفك ، إذا لم يكن بإمكانك تنزيله بالنقر فوق هذا الرابط: <a href='https://play.google.com/store/apps/details?id=org.telegram.messenger'>حمل تلغرام </a> <br></br> 2- لطلب استشارة يجب عليك <a href='/consultation'>اختيار التخصص الذي تريد وانقر على زر بدء الإستشارة</a></p>"
                 }
             },
             card2:{
                 title:{fr:"Attendez votre tour" ,ar:"انتظر دورك"},
                 date:{fr:"Deuxième étape", ar:"الخطوة الثانية"},
                  body :{
-                     fr:"Après avoir envoyé un message Whatsapp vers ce numéro '0662495329', vous recevrez un message qui vous donne toutes les villes disponibles, après que vous choissiserez votre ville, notre système vous mettra sur la liste d'attente lorsque tous les patients devant vous termineront leurs consultations et qu'un médecin deviendra libre. A ce moment, vous serez avertis pour entrer en contact avec le médecin." ,
-                  ar:"بعد إرسالك لرسالة نصية. سيضعك نظامنا في قائمة الانتظار عندما يرحل جميع المرضى أمامك ويصبح الطبيب مجانيًا ، سيتم إبلاغك"
+			 fr:"<p>Après avoir envoyé un message sur Telegram, vous devez suivre les instructions données par le chatbot pour que notre système vous mettra sur la liste d'attente lorsque tous les patients devant vous termineront leurs consultations et qu'un médecin deviendra libre. A ce moment, vous serez avertis pour entrer en contact avec le médecin.</p>" ,
+                  ar:"<p>بعد إرسال رسالة على تلغرام ، يجب عليك اتباع التعليمات التي قدمها برنامج الدردشة بحيث يضعك نظامنا في قائمة الانتظار عندما ينتهي جميع المرضى قبلك من استشاراتهم ويصبح الطبيب حرا. في هذا الوقت ، سيتم إبلاغك للإتصال بالطبيب.</p>"
                 }
                 },
             card3:{
                 title:{fr:"Contactez-nous", ar:"تواصل معنا"}, 
                 date:{fr:"Troisième étape", ar:"الخطوة الثالثة"},
                 body :{
-                    fr:"Maintenant, vous êtes en consultation avec votre médecin. C'est à vous de jouer. Vous devez expliquer au médecin la raison pour laquelle vous l'avez contacter. Le medecin va faire de son mieux pour répondre à vos questions." ,
-                    ar:"وانتهى الأمر الآن مع طبيبك. الأمر متروك لك الآن ، يجب أن تشرح للأطباء سبب رغبتك في الاتصال به وسيبذل الطبيب قصارى جهده للإجابة على أسئلتك" 
+                    fr:"<p>Maintenant, vous êtes en consultation avec votre médecin. C'est à vous de jouer. Vous devez expliquer au médecin la raison pour laquelle vous l'avez contacter. Le médecin va faire de son mieux pour répondre à vos questions.</p>" ,
+                    ar:"<p>وانتهى الأمر الآن مع طبيبك. الأمر متروك لك الآن ، يجب أن تشرح للأطباء سبب رغبتك في الاتصال به وسيبذل الطبيب قصارى جهده للإجابة على أسئلتك</p>" 
                 }
             }
         }

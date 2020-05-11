@@ -21,7 +21,6 @@ import {
 
 import { withRouter } from "react-router";
 import NotFound from './layouts/notFound';
-import Call from './components/videochat/app'
 
 
 class ScrollToTop extends React.Component {
@@ -53,7 +52,6 @@ class App extends Component {
     <Router>
       <ScrollToTopWithRouter />
         <Switch>
-            <Route exact path="/call-video/:name/:medecin" render={props => <Call {...props} />} />
             <Route path={["/profil", "/call-video"]} render={props =>  <Medecin {...props} /> } />
             <Route exact path="/admin/pelia" render={props => <Admin {...props} />} />
             <Route exact path="/consultation" render={props => <Consultation {...props} />} />

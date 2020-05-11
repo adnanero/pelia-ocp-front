@@ -1,38 +1,39 @@
 
-const { addUser, removeUser,getNumber, changeTicket, addTicket } = require('./users');
+// const { addUser, removeUser,getNumber, changeTicket, addTicket } = require('./users');
+const UsersController = require('./users');
 
 
 exports.chatMAnager = (io) => {
 
     io.on('connect', (socket) => {
-        socket.on('join', ({ name, id, type}, callback) => {
-          const { error, user, tickets, ticket, medecinsOnligne } = addUser({ socket_id: socket.id, name, id, type });
-          
-          if(error) return callback({error: true, message:error});
-
-          socket.join(id);
-          if(user.type === "medecin"){
+        socket.on('join', ( request , callback) => {
+          // { name, id, type}
+          socket.join(request.id);
+          if ( request.type === "medecin" ) {
+            const { error, tickets, medecinsOnligne } = UsersController.addMedecin({ socket_id: socket.id, name : request.name, id : request.id, nom :request.nom, prenom: request.prenom });
+            if(error) return callback({error: true, message:error});
             io.emit('medecin-switch', {  medecinsOnligne, type: "conected"});
             callback({error:false, tickets});
           }else{
-            callback({error:false, ticket, medecinsOnligne});
+            const { error, ticket, medecin, medecinsOnligne } = UsersController.addPatient({ socket_id: socket.id, name: request.name, id: request.id });
+            callback({error:false, ticket, medecin, medecinsOnligne});
           }
           
         });
 
         socket.on('add-tickets', ({medecin, user}, callback) => {
-          const { error, message, nombre, tickets, ticket } = addTicket({ medecin, user, socket_id: socket.id });
+          const { error, message, nombre, tickets, ticket } = UsersController.addTicket({ medecin, user, socket_id: socket.id });
           io.to(medecin.id).emit('switch-patient', { tickets, type:"conected" });
           callback({error, message, nombre, ticket});
         }); 
         socket.on('switch-ticket', ({ selectedUser, type, medecin }, callback) => {
           
           if(selectedUser === undefined) return callback({error: true, message: "aucun utilisateur choisit"});
-          const {ticket, tickets, patient} = changeTicket({ selectedUser, type, medecin, socket_id: socket.id });
+          const {ticket, tickets, patient, idMedecin} = UsersController.changeTicket({ selectedUser, type, medecin, socket_id: socket.id });
           if(ticket === undefined) return{error:true, ticket: {}}
           if(type === "ready"){
             io.to(medecin.id).emit('switch-patient', { tickets, ticket , type:"ready"});
-            return callback({send: true, tickets, ticket});
+            return callbselectedUserack({send: true, tickets, ticket});
           }
           else if(type === "debut"){ 
              io.to(patient.id).emit('ticket-switch', { type ,tickets, ticket });
@@ -42,8 +43,11 @@ exports.chatMAnager = (io) => {
          }
          else if(type === "attente"){
             io.to(patient.id).emit('ticket-switch', { type, tickets, ticket  });
+
         }else if (type === "delete") {
           io.to(selectedUser.id).emit('ticket-switch', { type, tickets, ticket: {}  });
+          io.to(idMedecin).emit('ticket-switch', { type, tickets, ticket: {}  });
+
         }
 
         return callback({error: false, ticket, tickets});
@@ -81,17 +85,15 @@ exports.chatMAnager = (io) => {
       }); 
       
         socket.on('disconnect', (reason) => {
-          const {user, type, message, error, medecinsOnligne, tickets} = removeUser(socket.id);
+          const {user, type, message, error, medecinsOnligne, tickets} = UsersController.removeUser(socket.id);
           if(!error){
             if(type == "medecin"){
-              
               io.emit('medecin-switch', { medecinsOnligne, type: "disconnected", reason });
           }else{
-            
-            io.to(user.id).emit('switch-patient', { tickets, user , type:"disconnect", reason});
+            io.to(user.medecin).emit('switch-patient', { tickets, user , type:"disconnect", reason});
           }
           }
         })
-      });
+    });
       
 }

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 
 import {Navbar, Nav, Button, Row, Col} from 'react-bootstrap'
 import Cookies from 'js-cookie'
@@ -17,8 +17,6 @@ import {
   Route
 } from "react-router-dom";
 
-
-import Call from './../components/videochat/app'
 const Medecin = (props) =>  {
    
         let isPatient = (props.match.params.name === undefined) ? false : true;
@@ -30,7 +28,6 @@ const Medecin = (props) =>  {
                 <Header {...props} />
                 <main id="medecin-site" className="medecin-site">
             <Switch>
-                <Route exact path="/call-video" render={props => <Call {...props} />} />
                 <Route exact path="/profil/home" render={props => <Comment {...props} />} />
                 <Route exact path="/profil/contact" render={props => <Contact {...props} />} />
                 <Route exact path="/profil/chat" render={props => <Chat {...props} />} />
@@ -52,15 +49,12 @@ function Header(props){
         Cookies.remove('token');
         setTimeout(() => {
             setIsLogout(true)
+            window.location.reload();
         }, 1000);
         
     }
     
-    if(isLogout || Cookies.get('user') === undefined){
-        return <Redirect to="/" />
-
-    }   
-
+ 
      return(
         <header className="header-call">
              <Navbar collapseOnSelect={true} onToggle={(etat) => setIsToggled(etat)} style={{background: "#61ccff", boxShadow: "0px 0px 30px rgba(73, 78, 92, 1)", padding: 0}} expand="lg" as="nav">

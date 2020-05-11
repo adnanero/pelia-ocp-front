@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import Peer from 'simple-peer';
 import autoBind from 'react-autobind';
-import Cookies from 'js-cookie'
-
-import baseUrl from './../../../config'
 
 import {CircularProgress} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { Button, Row, Col} from 'react-bootstrap'
 import {FaPhoneSlash, FaCheck} from 'react-icons/fa'
 
 import callerTone from './../../../assets/media/ringPhone.mp3'
+
+import LogoPng from './../../../assets/img/pelia-logo.png'
 
 
 export default class ElemenetsCall extends Component {
@@ -179,7 +177,8 @@ export default class ElemenetsCall extends Component {
     render() {
         let { responding, passingCall, respondingProcess} = this.state;
         return (
-            <div className="video">
+            <div className="video medecin">
+                
                 <audio ref={ref => this.callerTone = ref} playsInline />
                 <audio ref={ref => this.notifTone = ref} playsInline />
                 <div className="container-fluid">
@@ -195,8 +194,13 @@ export default class ElemenetsCall extends Component {
                 } 
                 { (this.props.type === "video" || this.props.type === "audio") &&
                     <Row className={!passingCall ? "responding process": "responding"}>   
-                        <Col style={{paddingTop:"4rem", paddingLeft:0}}>
-                            <div className="background"></div>
+                        <Col style={{paddingLeft:0}}>
+                        <Row className="text-center justify-content-around banner-call">  
+                    <div>
+                        <img src={LogoPng} width="20%" alt="pelia logo" /> 
+                    </div> 
+                </Row> 
+                            <div className="layer"></div>
                             { !passingCall &&                      
                                 <Row className="text-center d-flex justify-content-around w-100 p-4 ml-1 mt-5">   
                                     <p className="text-center caller " style={{maxHeight: "20%"}}> appel en cours ...</p>

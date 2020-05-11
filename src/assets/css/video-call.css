@@ -1,4 +1,15 @@
 
+
+.video{
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  z-index: 9999;
+}
+
 #peerVid {
     position: fixed;
   }
@@ -54,22 +65,37 @@
     height: 100%;
  
   }
-  .responding .background{
+  .responding .banner-call div{
+    background: rgb(97, 204, 255);
+    box-shadow: rgb(73, 78, 92) 0px 0px 30px;
+    padding-bottom: 10px;
+    width: 100%;
+    z-index: 999999;
+  }
+  .responding .banner-call div img{
+    background: #fff;
+    padding: 10px 40px;
+    width: 12%;
+    border-radius: 0 0 15px 15px;
+  }
+  /* .responding .background{
     position: absolute;
     margin-top: -4rem;
     width: 100%;
     height: 100%;
     z-index: 3;
     background-color: #000;
+  } */
+  .responding.process .layer{
+    position: absolute;
+    /* margin-top: -4rem; */
+    width: 100%;
+    /* height: 100%; */
+    z-index: 3;
+    background-color: #000;
+    opacity: .6;
   }
-  .responding.process{
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-color: #000;
-      opacity: .6;
-      z-index: 999;
-  }
+ 
   .responding .caller{
       text-align: center;
       color: #fff;
@@ -82,6 +108,7 @@
     color: #038DFE;
 
   }
+  
   .end-call{
     position: absolute;
     bottom: 10%;
@@ -148,11 +175,13 @@
   .header-call .logout{
     background-color: #038DFE !important;
     padding: 8px 35px;
-    margin-left: 5%;
     border-radius: 35px;
     color: #fff;
     font-size: 15px;
     text-transform: uppercase;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
   }
 .header-call .nav-item .nav-link{
     color: #fff;

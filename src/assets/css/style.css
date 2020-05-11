@@ -52,7 +52,7 @@ h4 {
 }
 
 p {
-  font-family: "Montserrat";
+  font-family: "Poppins";
   font-size: 14px;
   line-height: 2;
   color: #666666;
@@ -75,7 +75,7 @@ a:hover {
 }
 
 .switch-lang {
-  width: 100px;
+  width: 120px;
   text-align: left;
   cursor: pointer;
   position: fixed;
@@ -184,6 +184,7 @@ li {
   position: fixed;
   top: -70px;
   transform: translateY(70px);
+  width: 100%;
 }
 
 .header_area .main_menu.header_fixed .navbar {
@@ -267,6 +268,7 @@ li {
   .header_area .navbar .nav .nav-item .nav-link {
     line-height: 15px;
     padding-right: 0 !important;
+    color:#000;
   }
   .navbar .row {
     margin-left: 0;
@@ -373,6 +375,10 @@ li {
   -webkit-transition: 0.5s;
   transition: 0.5s;
   /* margin-left: 0%; */
+}
+
+.btn_consultation{
+  font-size: 18px !important;
 }
 
 .header_fixed .inscription-btn span {
@@ -852,7 +858,7 @@ li {
   }
   .switch-lang {
     position: fixed;
-    top: 10px;
+    top: 0px;
     right: 40%;
   }
 }
@@ -891,7 +897,7 @@ li {
   }
 }
 .home-info .inscription-btn span {
-  background: transparent;
+  background: #fff;
   border: 2px solid #f9f9f9;
   color: #f9f9f9;
 }
@@ -1718,7 +1724,7 @@ textarea.input {
   );
   border-radius: 25px;
 
-  font-family: "Montserrat";
+  font-family: "Poppins";
   font-size: 16px;
   color: #fff;
   line-height: 1.2;
@@ -2286,11 +2292,11 @@ button:focus {
 }
 .colorBlack {
   color: black;
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 .colorWhite {
   color: white;
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 @-webkit-keyframes clipReveal {
@@ -2624,7 +2630,7 @@ body {
 }
 
 .notfound .notfound-404 h1 {
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #ececec;
   font-weight: 900;
   font-size: 276px;
@@ -2638,7 +2644,7 @@ body {
 }
 
 .notfound h2 {
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 46px;
   color: #000;
   font-weight: 900;
@@ -2656,7 +2662,7 @@ body {
 }
 
 .notfound a {
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 14px;
   text-decoration: none;
   text-transform: uppercase;

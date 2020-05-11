@@ -11,6 +11,8 @@ import {FaPhoneSlash, FaPhone, FaCheck} from 'react-icons/fa'
 
 import callerTone from './../../assets/media/callertone.mp3'
 
+import LogoPng from './../../assets/img/pelia-logo.png'
+
 
 export default class ElemenetsCall extends Component {
     constructor(props) {
@@ -186,7 +188,8 @@ export default class ElemenetsCall extends Component {
     render() {
         let {responding, passingCall, respondingProcess, isCalling } = this.state;
         return (
-            <div className="video">
+            <div className="video patient">
+               
                 <audio ref={ref => this.callerTone = ref} playsInline />
                 <audio ref={ref => this.notifTone = ref} playsInline />
                 <div className="container-fluid">
@@ -200,9 +203,17 @@ export default class ElemenetsCall extends Component {
                     <audio id="peerAudio" ref={(ref) => {this.userAudio = ref}} />
                 </Row>
                 } 
+
                 { (this.props.type === "video" || this.props.type === "audio") && isCalling &&
                     <Row className={!passingCall ? "responding process": "responding"}>   
-                        <Col style={{paddingTop:"4rem", paddingLeft:0}}>
+
+                        <Col style={{ paddingLeft:0}}>
+                        <Row className="text-center justify-content-around banner-call">  
+                    <div>
+                        <img src={LogoPng} width="20%" alt="pelia logo" /> 
+                    </div> 
+                </Row> 
+                            <div className="layer"></div>
                             <div className="background"></div>
                                 { !passingCall &&                      
                                     <Row className="text-center d-flex justify-content-around w-100 p-4 ml-1 mt-5">   

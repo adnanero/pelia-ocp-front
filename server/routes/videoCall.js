@@ -5,7 +5,7 @@ const router = express.Router();
 
 const {  body } = require('express-validator');
 
-router.post('/video-call/start', AuthMiddlewhere, VideoCallController.lanceVideocall);
+// router.post('/video-call/start', AuthMiddlewhere, VideoCallController.lanceVideocall);
 
 router.post('/login' , [
     body('password').isLength({ min: 1}),

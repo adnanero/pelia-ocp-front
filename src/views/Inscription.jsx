@@ -267,7 +267,7 @@ class ElementForm extends Component  {
                     </Row>
                     <Row className="inscription-input">
                     <Collapse in={fieldValidationErrors.nomError}>
-                        <div id="example-collapse-text">
+                        <div>
                             <Alert  variant="danger" style={style.text}>
                             {content.error.nom[lang]}
                             </Alert>
@@ -289,7 +289,7 @@ class ElementForm extends Component  {
                     </Row>
                     <Row className="inscription-input" style={style.text}>
                     <Collapse in={fieldValidationErrors.prenomError}>
-                        <div id="example-collapse-text">
+                        <div>
                             <Alert  variant="danger">
                             {content.error.prenom[lang]}
                             </Alert>
@@ -312,7 +312,7 @@ class ElementForm extends Component  {
                     {/* ERROR NUMERO TELEPHONE */}
                     <Row className="inscription-input" style={style.text}>
                     <Collapse in={fieldValidationErrors.numeroError}>
-                        <div id="example-collapse-text">
+                        <div>
                             <Alert  variant="danger">
                             {content.error.phone[lang]}
                             </Alert>
@@ -333,7 +333,7 @@ class ElementForm extends Component  {
                     
                     <Row className="inscription-input" style={style.text}>
                     <Collapse in={fieldValidationErrors.emailError}>
-                        <div id="example-collapse-text">
+                        <div>
                             <Alert  variant="danger">
                             {content.error.email[lang]}
                             </Alert>
@@ -352,14 +352,13 @@ class ElementForm extends Component  {
                             label={content.form.input_password.label[lang]}
                             type="password"
                             onBlur={this.validateField}
-                            id="password"
                             placeholder={content.form.input_confirm.placeholder[lang]}
                             autoComplete="current-password"
                         />                    
                     </Row>
                     <Row className="inscription-input" style={style.text}>
                         <Collapse in={fieldValidationErrors.password}>
-                            <div id="example-collapse-text">
+                            <div>
                                 <Alert  variant="danger">
                                 {content.error.password[lang]}
                                 </Alert>
@@ -376,7 +375,6 @@ class ElementForm extends Component  {
                             name="password_confirmation"
                             label={content.form.input_confirm.label[lang]}
                             type="password"
-                            id="password"
                             placeholder={content.form.input_confirm.placeholder[lang]}
                             onBlur={this.validateField} 
                             autoComplete="current-password"
@@ -384,7 +382,7 @@ class ElementForm extends Component  {
                     </Row>
                     <Row className="inscription-input" style={style.text}>
                         <Collapse in={fieldValidationErrors.password_confirmation}>
-                            <div id="example-collapse-text">
+                            <div>
                                 <Alert  variant="danger">
                                 {content.error.password_confirmation[lang]}
                                 </Alert>
@@ -393,10 +391,9 @@ class ElementForm extends Component  {
                     </Row>
                     <Row className="inscription-input" style={style.text}>
                           <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">ville</InputLabel>
+                            <InputLabel >ville</InputLabel>
                             <Select
                             labelId="demo-simple-select-label"
-                            id="demo-simple-select"
                             value={ville}
                             name="ville"
                             required={true}
@@ -411,7 +408,7 @@ class ElementForm extends Component  {
                     </Row>
                     <Row className="inscription-input" style={style.text}>
                     <Collapse in={fieldValidationErrors.villeError}>
-                        <div id="example-collapse-text">
+                        <div>
                             <Alert  variant="danger">
                             {content.error.ville[lang]}
                             </Alert>
@@ -420,14 +417,14 @@ class ElementForm extends Component  {
                     </Row>
                     <Row className="inscription-input" style={style.text}>
                         <Collapse in={donneIncorecte}>
-                            <div id="example-collapse-text">
+                            <div>
                                 <Alert  variant="danger">
                                     {content.error.generale[lang]}
                                 </Alert>
                             </div>
                         </Collapse>
                         <Collapse in={success}>
-                            <div id="example-collapse-text">
+                            <div >
                                 <Alert  variant="success">
                                     {content.validation[lang]}
                                 </Alert>

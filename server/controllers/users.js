@@ -3,12 +3,57 @@ const users = [];
 const medecins = [];
 const tickets = {};
 const resolved = {};
-module.exports.addUser = ({ socket_id, name, id, type }) => {
+
+// module.exports.addUser = ({ socket_id, name, id, type }) => {
+//   if(!name) return { error: 'Username are required.' };
+
+//   name = name.trim().toLowerCase();
+//   const user = { socket_id, id, name, type, state: "conected" };
+//   if(type === "medecin"){
+//   const existingUser = medecins.findIndex((user) => user.id === id);
+//     if(existingUser === -1) {
+//       medecins.push(user);
+//       tickets[user.id] = [];
+//       resolved[user.id] = 0;
+//     }else{
+//       medecins[existingUser] = user;
+//     }
+
+//   return { error:false, user, medecinsOnligne: medecins, tickets: tickets[user.id] };
+
+//   }else if(type === "patient"){
+//     const existingUser = users.find((user) => user.id === id && user.name === name);
+//     let message= "";
+//     if(existingUser === undefined) {
+//       users.push(user);
+//       message = "new user";
+//       return { medecin: {}, error: false, ticket:{}, user, message, medecinsOnligne: medecins };
+//     }else{
+      
+//       if(existingUser.medecin === undefined){
+//         message = "patient n'a pas de ticket";
+//         return { error: false, user, ticket:{}, medecin: {}, message, medecinsOnligne: medecins };
+//       }else{
+//         message ="patient a déjà une ticket";
+//         let ticketsThisMedecin = tickets[existingUser.medecin];
+//         let ticketUser = ticketsThisMedecin.find((ticket) => ticket.name === existingUser.name && ticket.id === existingUser.id);
+//         if(ticketUser === undefined) return {message: "ticket non trouver", medecin: {}, ticket: {}, user: existingUser, medecinsOnligne: medecins } 
+//         ticketUser = {...ticketUser, state: "conected"};
+//         tickets[existingUser.medecin] = ticketsThisMedecin;
+//         let medecin = medecins.find((med) => med.id === existingUser.medecin);
+
+//         return { error:false, ticket:ticketUser, user, message, medecinsOnligne: medecins, medecin };
+//       }
+//     }    
+//   }
+// }
+
+module.exports.addMedecin = ({ socket_id, name, id, nom, prenom }) => {
   if(!name) return { error: 'Username are required.' };
 
   name = name.trim().toLowerCase();
-  const user = { socket_id, id, name, type, state: "conected" };
-  if(type === "medecin"){
+  const user = { socket_id, id, nom, prenom, name, type: "medecin", state: "conected" };
+  
   const existingUser = medecins.findIndex((user) => user.id === id);
     if(existingUser === -1) {
       medecins.push(user);
@@ -18,37 +63,44 @@ module.exports.addUser = ({ socket_id, name, id, type }) => {
       medecins[existingUser] = user;
     }
 
-  return { error:false, user, medecinsOnligne: medecins, tickets: tickets[user.id] };
+  return { error:false, user, medecinsOnligne: medecins, tickets: tickets[user.id] };  
+}
 
-  }else if(type === "patient"){
+module.exports.addPatient = ({ socket_id, name, id, type }) => {
+  if(!name) return { error: 'Username are required.' };
+
+  name = name.trim().toLowerCase();
+  const user = { socket_id, id, name, type : "patient", state: "conected" };
+ 
     const existingUser = users.find((user) => user.id === id && user.name === name);
     let message= "";
     if(existingUser === undefined) {
       users.push(user);
       message = "new user";
-      return { error: false, ticket:{}, user, message, medecinsOnligne: medecins };
+      return { medecin: {}, error: false, ticket:{}, user, message, medecinsOnligne: medecins };
     }else{
       
       if(existingUser.medecin === undefined){
         message = "patient n'a pas de ticket";
-        return { error: false, user, ticket:{}, message, medecinsOnligne: medecins };
+        return { error: false, user, ticket:{}, medecin: {}, message, medecinsOnligne: medecins };
       }else{
         message ="patient a déjà une ticket";
         let ticketsThisMedecin = tickets[existingUser.medecin];
         let ticketUser = ticketsThisMedecin.find((ticket) => ticket.name === existingUser.name && ticket.id === existingUser.id);
-        if(ticketUser === undefined) return {message: "ticket non trouver", ticket: {}, user: existingUser, medecinsOnligne: medecins } 
-        ticketUser = {...ticketUser, status: 0, state: "conected"};
+        if(ticketUser === undefined) return {message: "ticket non trouver", medecin: {}, ticket: {}, user: existingUser, medecinsOnligne: medecins } 
+        ticketUser = {...ticketUser, state: "conected"};
         tickets[existingUser.medecin] = ticketsThisMedecin;
+        let medecin = medecins.find((med) => med.id === existingUser.medecin);
 
-        return { error:false, ticket:ticketUser, user, message, medecinsOnligne: medecins };
+        return { error:false, ticket:ticketUser, user, message, medecinsOnligne: medecins, medecin };
       }
     }    
-  }
+  
 }
 module.exports.addTicket = ({ medecin, user, socket_id }) => {
   if(!medecin) return { error:true, message: 'aucun médecin choisit' };
 
-  const ticket = { socket_id, name: user.name, id: user.id, status: 0 };
+  const ticket = { socket_id, name: user.name, id: user.id, status: 0, state : "conected" };
   
   let ticketMedecin = tickets[medecin.id];
   let count= 0;
@@ -83,13 +135,19 @@ module.exports.changeTicket = ({selectedUser, type, medecin}) => {
       ticket: ticketsMedecin[index]
     }
   }else if (type === "delete"){
-    patient = users.find((user) => user.id === selectedUser.id); 
+    patientIndex = users.findIndex((user) => user.id === selectedUser.id); 
+    
+    let patient = users[patientIndex]
     let index = tickets[patient.medecin].findIndex((user) => user.id === selectedUser.id); 
-    tickets[patient.medecin].splice(index, 1)
-  
+    let TicketsMEdecin = tickets[patient.medecin]
+    TicketsMEdecin.splice(index, 1)
+    let idMedecin = patient.medecin;
+    users[patientIndex]["medecin"] = undefined;
+    tickets[patient.medecin] = TicketsMEdecin;
     return { 
-      tickets: tickets[patient.medecin], 
-      ticket: {}
+      tickets: TicketsMEdecin, 
+      ticket: {},
+      idMedecin
     }
   }
   else{
@@ -102,11 +160,9 @@ module.exports.changeTicket = ({selectedUser, type, medecin}) => {
     }
     else if(type === "fin"){
       ticketsMedecin[selectedUser]["status"] = -2;
-     
     }
     else if(type === "attente"){
       ticketsMedecin[selectedUser]["status"] = 1;
-      
     }
     return { 
       tickets: tickets[medecin.id], 
@@ -141,7 +197,7 @@ module.exports.removeUser = (socket_id) => {
   }
   else {
      // si un medecin qui vas être déconnecter on le met on etat deconnected 
-    medecins[medecinindex] = {...medecins[medecinindex], status:-2 , state: "disconnected"}
+    medecins[medecinindex] = {...medecins[medecinindex] , state: "disconnected"}
     return {user: medecins[medecinindex], medecinsOnligne: medecins, type: "medecin"};
   }
 }

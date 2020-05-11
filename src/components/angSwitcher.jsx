@@ -13,7 +13,7 @@ export default function angSwitcher(props) {
     return (
         lang === 'ar' ?
         <div className="switch-lang"> 
-        <div style={{direction:"rtl" , textAlign:"right"}} className="current-lang">
+        <div style={{direction:"rtl" , textAlign:"right"}} className="current-lang selecting-lang">
             <img className="lang-flag mx-2" src="https://img.icons8.com/color/48/000000/morocco-circular.png" alt="arab"/>
             <p style={{direction:"rtl", textAlign:"right"}} className="lang-text">عربي</p>
         </div>
@@ -27,15 +27,17 @@ export default function angSwitcher(props) {
         :
         <div className="switch-lang"> 
             <div className="current-lang" >
+	    <div  className="selecting-lang">
                 <img className="lang-flag mx-2" src="https://cdn2.iconfinder.com/data/icons/world-flag-icons/128/Flag_of_France.png" alt="français"/>
                 <p className="lang-text" >Français</p>
+	    </div>
                 <div style={{direction:"rtl" , textAlign:"right"}} className="lang-dropdown">
                     <div className="selecting-lang" id="ar" onClick={switchLang}>
                         <img className="lang-flag mx-2" src="https://img.icons8.com/color/48/000000/morocco-circular.png" alt="arab"/>
                         <p className="lang-text">عربي</p>
-                        </div>
-
                     </div>
+
+                </div>
             </div>
         </div>
     )

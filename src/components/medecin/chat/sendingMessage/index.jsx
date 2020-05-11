@@ -3,7 +3,28 @@ import React from 'react';
 import {Col, Row} from 'react-bootstrap'
 import {FaPaperclip} from 'react-icons/fa';
 import {IoIosSend, IoMdMic} from 'react-icons/io'
-const Input = ({ setMessage, sendMessage, message }) => (
+import baseUrl from './../../../../config'
+
+import axios from 'axios';
+
+const Input = ({ setMessage, sendMessage, message }) =>
+{
+  const onChangeHandler = (event) => {
+    let selectedFile = event.target.files[0];
+    console.log(selectedFile);
+    let data = new FormData() 
+    data.append('file', selectedFile, selectedFile.name )
+    data.file= selectedFile
+    console.log(data)
+    axios.post(`${baseUrl.node}upload` , data, {headers: {'Content-Type': 'multipart/form-data'}})
+  .then(res => { // then print response status
+    console.log(res)
+  }).catch((e)=> {
+    console.log(e)
+  })
+
+  }
+return (
 
   <form className="messageForm"  >
       <Row className="chatContainer m-0">
@@ -15,7 +36,8 @@ const Input = ({ setMessage, sendMessage, message }) => (
         </Col>
         <Col lg="2">
           <Row className="justify-content-around align-items-center">
-          <FaPaperclip color= "#435f7a" cursor= "pointer" className="attachment" size="1.5rem" opacity= "0.5" />
+            <label htmlFor="document"> <FaPaperclip color= "#435f7a" cursor= "pointer" className="attachment" size="1.5rem" opacity= "0.5" /> </label>
+          <input id="document" style={{display: "none"}} type="file" name="file" onChange={onChangeHandler}/>
             <button className="SendMsgBtn" type="button" onClick={e => sendMessage(e)}> {(message === "")  ? <IoMdMic /> : <IoIosSend size="1.5rem" /> }  </button>
           </Row>
             
@@ -26,5 +48,5 @@ const Input = ({ setMessage, sendMessage, message }) => (
   
   
 )
-
+}
 export default Input;

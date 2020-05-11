@@ -10,7 +10,6 @@ function InputIcone(props) {
     return (
         <TextField
         {...others}
-        id="standard-basic input-with-icon-textfield"
         width= "200"
         fullWidth
         InputProps={{

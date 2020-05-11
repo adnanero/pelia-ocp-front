@@ -9,12 +9,15 @@ const TextContainer = ({ tickets,metVeille,passingConsulting, finishingConsult, 
     
     let count = 0;
     tickets.forEach(ticketVerify => {
-      if(ticketVerify.status === 0 || ticketVerify.status === 1 ){
+      if((ticketVerify.status === 0 || ticketVerify.status === -1) && ticketVerify.state === "conected" ){
         count++;
       }
     });
     setNombreTicket(count)
   },[tickets]);
+  useEffect (() =>{
+    // passingConsulting()
+  },[]);
   
   const finTicket = () => {
     setConsulting(false)
@@ -29,12 +32,11 @@ return(
      
     <div className="tickets">
       <div className="tickets-infos">
-      { tickets.length ?
-
+      { nmbr_ticket ?
       <div>
         vous avez ecore : {nmbr_ticket} en attente <br />
     
-          { 
+          {
             onConsuting &&
             <div className="action-consulting">
               <button className="btn btn-primary" onClick={ finTicket }>fermer le ticket</button>
@@ -44,9 +46,6 @@ return(
           { !onConsuting && nmbr_ticket > 0 &&
             <button className="btn btn-primary" onClick={ passingConsulting }>patient suivant</button>
           }
-           
-        
-        
       </div>
       :
       <div className="tickets d-flex active">
