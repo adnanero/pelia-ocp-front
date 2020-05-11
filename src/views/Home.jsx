@@ -31,7 +31,6 @@ let lang = Cookies.get('lang')
 lang = (lang === undefined)? "fr" : lang
 
 let style = (lang === "ar")? {
-    float: 'right',
     direction: 'rtl'  /* Right to Left */,
     textAlign:'right',
     
@@ -190,27 +189,27 @@ let HomeContent = {
         title:{fr:"Téléconsultation : comment ça marche ? " ,ar:"الاستشارة من المنزل: كيف تعمل؟"},
         body:{
             card1:{
-                title:{fr:"Demander consultation" ,ar:"طلب استشارة"}, 
+                title:{fr:"Demander consultation" ,ar:"طلب استشارة طبية"}, 
                 date:{fr:"Première étape", ar:"المرحلة الأولى"},
                 body :{
-                    fr:"<p>1- Premièrement assurez que vous avez déja Telegram sur votre téléphone, Si non vous pouvez le télécharger en cliquant sur ce lien : <a href='https://play.google.com/store/apps/details?id=org.telegram.messenger'>Télécharger Telegram </a> <br></br>2- Pour demander un consultation vous devez <a href='/consultation'>choisir une spécialité</a> et cliquer sur le boutton démarrer la consultation</p>" ,
-                     ar:"<p>تأكد أولاً من وجود تلغرام بالفعل على هاتفك ، إذا لم يكن بإمكانك تنزيله بالنقر فوق هذا الرابط: <a href='https://play.google.com/store/apps/details?id=org.telegram.messenger'>حمل تلغرام </a> <br></br> 2- لطلب استشارة يجب عليك <a href='/consultation'>اختيار التخصص الذي تريد وانقر على زر بدء الإستشارة</a></p>"
+                    fr:"<p>1- Cliquez sur <a href='/consultation'>consultation</a> <br></br>2- Choisissez le site dans lequel vous êtes présents<br></br> 3- Choisissez le médecin disponible</p>" ,
+                     ar:"<p className='mt-5'>1- أولا تضغط على<a href='/consultation'> استشارة طبية</a><br> </br> 2- اختر الموقع الذي تتواجد فيه<br> </br> 3- اختر الطبيب المتاح</p>"
                 }
             },
             card2:{
                 title:{fr:"Attendez votre tour" ,ar:"انتظر دورك"},
                 date:{fr:"Deuxième étape", ar:"الخطوة الثانية"},
                  body :{
-			 fr:"<p>Après avoir envoyé un message sur Telegram, vous devez suivre les instructions données par le chatbot pour que notre système vous mettra sur la liste d'attente lorsque tous les patients devant vous termineront leurs consultations et qu'un médecin deviendra libre. A ce moment, vous serez avertis pour entrer en contact avec le médecin.</p>" ,
-                  ar:"<p>بعد إرسال رسالة على تلغرام ، يجب عليك اتباع التعليمات التي قدمها برنامج الدردشة بحيث يضعك نظامنا في قائمة الانتظار عندما ينتهي جميع المرضى قبلك من استشاراتهم ويصبح الطبيب حرا. في هذا الوقت ، سيتم إبلاغك للإتصال بالطبيب.</p>"
+			        fr:"<p>Vous êtes ajoutés à la file d'attente du médecin disponible. Une fois votre tour viendra, vous serez en contact avec lui.</p>" ,
+                    ar:"<p>تمت إضافتك إلى قائمة انتظار طبيبك, بمجرد أن يأتي دورك, سوف تكون على اتصال معه</p>"
                 }
                 },
             card3:{
-                title:{fr:"Contactez-nous", ar:"تواصل معنا"}, 
+                title:{fr:"Démarrer une consultation", ar:"إبدأاستشارتك"}, 
                 date:{fr:"Troisième étape", ar:"الخطوة الثالثة"},
                 body :{
-                    fr:"<p>Maintenant, vous êtes en consultation avec votre médecin. C'est à vous de jouer. Vous devez expliquer au médecin la raison pour laquelle vous l'avez contacter. Le médecin va faire de son mieux pour répondre à vos questions.</p>" ,
-                    ar:"<p>وانتهى الأمر الآن مع طبيبك. الأمر متروك لك الآن ، يجب أن تشرح للأطباء سبب رغبتك في الاتصال به وسيبذل الطبيب قصارى جهده للإجابة على أسئلتك</p>" 
+                    fr:"<p>Vous allez commencer la consultation avec le médecin. Bonne consultation.</p>" ,
+                    ar:"<p>ستبدأ الإستشارة مع الطبيب, أتمنى لك استشارة جيدة.</p>" 
                 }
             }
         }

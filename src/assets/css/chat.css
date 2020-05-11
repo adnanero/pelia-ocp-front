@@ -178,7 +178,7 @@
     width: calc(100% - 1px);
     bottom: 0.8px;
     right: 0.8px;
-    border-radius: 0 0 15px 0;
+    border-radius: 0 0 15px 14px;
   }
   .discussion .chatContainer .inputChat {
     font-family: "Poppins";

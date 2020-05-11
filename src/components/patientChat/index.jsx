@@ -8,7 +8,7 @@ const Chat = (props) => {
 
   const user = {nom:props.medecin.nom,prenom:props.medecin.prenom,type:'patient'}
   return (
-      <div className="chat">
+      <div className="chat mt-5">
           <Col lg="12" className = "bg-white p-0 discussion-container">
           <InfoBar user={user} titre={props.nomVille} />
         <Row className="discussion m-0">

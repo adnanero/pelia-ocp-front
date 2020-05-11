@@ -138,7 +138,7 @@ const SectionRepeat =(props) => {
                       <div id="example-collapse-text">
                       <form onSubmit={handleSubmit}>
                 <div className="feedback-container">
-                    <h4> {content.titre[lang]} </h4>
+                    <h4> {content.title[lang]} </h4>
                     <SectionRepeat newRating={newRating} setNewRating={ (newRate) => setNewRating(newRate)} />
                 </div>
                 <Row className="justify-content-around text-center">

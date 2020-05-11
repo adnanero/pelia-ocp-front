@@ -63,16 +63,16 @@ export default function Consultation(){
         return(
             <Modal show={show}>
             <Modal.Header>
-              <Modal.Title>  {content.Modal.titre[lang]} </Modal.Title>
+              <Modal.Title>  {content.modal.titre[lang]} </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p className="my-4"> {content.Modal.body[lang]} </p>
-                 <TextField fullWidth label="pseudo" onChange={handleChange} />
+                <p className="my-4"> {content.modal.body[lang]} </p>
+                 <TextField fullWidth label="Pseudo" onChange={handleChange} />
             </Modal.Body>
         
             <Modal.Footer>
               <Button variant="primary" onClick={SavePseudo}>
-              {content.Modal.button[lang]}
+              {content.modal.button[lang]}
               </Button>
             </Modal.Footer>
           </Modal>
@@ -485,84 +485,85 @@ let content = {
     modal:{
         titre:{ 
             fr:"Choisir un pseudo",
-            ar:""
+            ar:"اختر اسما يظهر للطبيب"
         },
         body:{
-            fr:"entrer un nom pour l'afficher à vos médecin lors des consultations"
+            fr:"Entrer un nom pour l'afficher à vos médecin lors des consultations",
+            ar:"اختر اسما يظهر للطبيب"
         },
         button:{
             fr:"Enregistrer",
-            ar:""
+            ar:"تسجيل"
         }       
     },
     ticket:{
         horsLigne:{
             message:{
                 fr:"Ce médecin est hors ligne",
-                ar:""  
+                ar:"هذا الطبيب خارج الخط"  
             },
             button:{
-                fr:"je veux plus attendre ce médecin",
-                ar:""
+                fr:"Je veux plus attendre ce médecin",
+                ar:"لم أعد أريد انتظار دوري"
             }
         },
         Loby:{
             titre : {
-                fr:" Bienvenue au lobby ",
-                ar:""
+                fr:"Bienvenue au file d'attente",
+                ar:"مرحبًا بك في قائمة الانتظار"
             },
             soustitre : {
                 fr:"Vous êtes maintenant au queue d'attente du médecin de la ville",
-                ar:""
+                ar:"أنت الآن في لائحة انتظار طبيب مدينة "
             },
             message : {
                 fr:"Quand votre tours vas arriver vous passez directement en discussion avec votre médecin",
-                ar:""
+                ar:"عندما يحين دورك ، تذهب مباشرة إلى المحادثة مع طبيبك"
             },
             button : {
                 fr:"Je veux plus attendre ce médecin",
-                ar:""
+                ar:"لم أعد أريد انتظار دوري"
             }
         },
         end:{
             fr:"Fin de la discussion avec votre médecin",
-            ar:""
+            ar:"نهاية المحادثة مع طبيبك"
         },
         manquer:{
             titre:{
-                fr:"vous avez manquer la discussion avec votre médecin attender quelque instant, votre médecin vas vous repparler",
-                ar:""
+                fr:"Vous avez manqué la discussion avec votre médecin attendre quelque instant, votre médecin vas vous repparler",
+                ar:"فاتتك المحادثة مع طبيبك انتظر لحظة ، وسيتصل بك طبيبك مرة أخرى"
             },
             button:{
-                fr:"maintenant disponible",
-                ar:""
+                fr:"Maintenant disponible",
+                ar:"متاح حاليا"
             },
             pret:{
-                fr:"vous êtes maintenant prêt, vous serez le prochain à être consulter avec ce médecin ",
-                ar:""
+                fr:"Vous êtes maintenant prêt, vous serez le prochain à être consulter avec ce médecin ",
+                ar:"أنت الآن جاهز لرؤية هذا الطبيب, أنت القادم"
             },
         },
     },
     listemedecin:{
         retour:{
-            fr:"retour",
-            ar:""
+            fr:"Retour",
+            ar:"عودة"
         },
         horsligne:{
             fr:"Ce médecin est hors ligne",
-            ar:""
+            ar:"هذا الطبيب خارج الخط"
         },
         medecin:{
             fr:"medecin ",
-            ar:""
+            ar:"طبيب"
         },
         medecinhorsligne:{
             fr:"hors ligne",
-            ar:""
+            ar:"خارج الخط"
         },
         medecinenligne:{
             fr:"en ligne",
-            ar:""
+            ar:"على الخط"
         }
 
     }

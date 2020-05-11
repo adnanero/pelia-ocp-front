@@ -16,7 +16,7 @@ const InfoBar = ({ user, resolved, titre, audioCall, videoCall, onConsuting, res
         <BsCircleFill className="circle_online" />
           <div className="profile">
           <img className="profile-img" src={medecin} alt="" />
-          {user.type === 'patient' ? <p className="upper"> {'Medecin de la ville : ' + titre} </p>  :<p className="upper"> pseudo patient:  {titre} </p>}          
+          {user.type === 'patient' ? <p className="upper"> {'Medecin'} </p>  :<p className="upper"> Pseudo patient:  {titre} </p>}          
         </div>
      
       

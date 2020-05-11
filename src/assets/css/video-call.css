@@ -78,6 +78,8 @@
     width: 12%;
     border-radius: 0 0 15px 15px;
   }
+
+  
   /* .responding .background{
     position: absolute;
     margin-top: -4rem;
@@ -128,7 +130,7 @@
     .repondre #myVid {
       width: auto;
       height: 100px;
-      top: 24px;
+      top: 50px;
       background-color: #000;
     }
       .responding .caller{
@@ -147,6 +149,10 @@
     .header-call .navbar-nav{
         justify-content: center;
         align-items: center;
+    }
+
+    .responding .banner-call div img{
+      width: 35%;
     }
   }
   .header-call{
