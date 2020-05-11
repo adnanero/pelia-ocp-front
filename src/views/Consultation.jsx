@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {Row, Col, Container} from 'react-bootstrap'
+import {Row, Col, Container, Modal, Button} from 'react-bootstrap'
 import Cookies from 'js-cookie'
 import io from "socket.io-client";
 import Axios  from 'axios';
@@ -16,7 +16,7 @@ import youssoufia from './../assets/img/villes/youssoufia.jpg'
 import khouribga from './../assets/img/villes/khouribga.jpg'
 import laayoune from './../assets/img/villes/laayoune.jpg'
 // import medecin from './../assets/img/medecin/doctor.png'
-import medecine from './../assets/img/medecin/female-doctor.png'
+import medecine from './../assets/img/medecin/femme.png'
 
 import baseUrl from './../config'
 
@@ -26,6 +26,9 @@ import ChatPAtient from './../components/patientChat/index'
 import VideoCall from './../components/patientChat/videoChat'
 import Feedback from './../components/patientChat/feedback'
 import { CSSTransition } from 'react-transition-group';
+
+import TextField from '@material-ui/core/TextField';
+
 
 let lang = Cookies.get('lang')
 lang = (lang === undefined)? "fr" : lang
@@ -44,9 +47,45 @@ const imageVilles = [
      
 ];
 
+export default function Consultation(){
+    const [show, setShow] = useState(true);
+    const [pseudoName , setPseudo] =useState("");
+    let pseudo = Cookies.get('pseudo');
+    const SavePseudo = () =>{
+        Cookies.set('pseudo', pseudoName);
+        setShow(false);
+    }
+    const handleChange = (e) => {
+        setPseudo(e.target.value)
+    }
+    
+    if(pseudo === undefined){
+        return(
+            <Modal show={show}>
+            <Modal.Header>
+              <Modal.Title>  {content.Modal.titre[lang]} </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p className="my-4"> {content.Modal.body[lang]} </p>
+                 <TextField fullWidth label="pseudo" onChange={handleChange} />
+            </Modal.Body>
+        
+            <Modal.Footer>
+              <Button variant="primary" onClick={SavePseudo}>
+              {content.Modal.button[lang]}
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )
+    }
+    return(
+        <Home pseudo={pseudo} />
+    )
+}
 
-export default function Home() {
-    const [ville, setVilleSoiced] = useState("")
+function Home({pseudo}) {
+    const [ville, setVilleSoiced] = useState("");
+    const [nomVille , setNomVille] =useState("")
     const [medecin, setMedecin] = useState("")
     const [medecinsOnligne, setMedecinsOnligne] = useState([])
     const [user, setUser ] = useState({});
@@ -64,7 +103,7 @@ export default function Home() {
     const ENDPOINT =  baseUrl.node;
   
     useEffect(() => {
-      socket = io(ENDPOINT);
+      socket = io(ENDPOINT+"packtchat");
         let nameGenerated = Cookies.get('name');
         let idGenerated = Cookies.get('id');
       if(nameGenerated === undefined || idGenerated === undefined){
@@ -73,8 +112,8 @@ export default function Home() {
         Cookies.set("name",nameGenerated, { expires: 1 });
         Cookies.set("id",idGenerated, { expires: 1 });
       }
-      let userSocket = {name: nameGenerated, id: parseInt(idGenerated), type: "patient"}
-
+      let userSocket = {name: nameGenerated, pseudo, id: parseInt(idGenerated), type: "patient"}
+      console.log(userSocket)
       setUser(userSocket)
   
       socket.emit('join',  userSocket , (response) => {
@@ -88,12 +127,6 @@ export default function Home() {
       });
 
       socket.on("medecin-switch", ({ user, type, medecinsOnligne }) => {
-          if(type === "diconnected"){
-              if(user.id === medecin.id){
-                  alert("ce médecin est déconnecter")
-              }
-
-          }
         setMedecinsOnligne(medecinsOnligne)
       });
       socket.on('message', (message) => {
@@ -121,7 +154,8 @@ export default function Home() {
     }, [ENDPOINT]);
 
     const setVille = (ville) => {
-        setVilleSoiced(ville)
+        setVilleSoiced(ville.id);
+        setNomVille(ville.nom_ville);
         setshowVilles(false)
         setshowMedecins(true)
     }
@@ -145,7 +179,10 @@ export default function Home() {
 
         event.preventDefault();
         if(message) {
-            socket.emit('sendMessage', {message, selectedUser: medecin, user }, () => setMessage(''));
+            socket.emit('sendMessage', {message, selectedUser: medecin, user }, (message) => {
+                setMessage(''); 
+                setMessages(messages => [ ...messages, message ]);
+             })
         }
     }
    
@@ -156,7 +193,7 @@ export default function Home() {
             <Banner title={content.title[lang]} subtitle={content.subtitle[lang]} style={{color:'white'}} banner={ContactBanner}  />
             {
                 ticket.name === user.name ?  
-                <Container className = "mt-5">
+                <Container>
                     <Ticket
                         setMessage={setMessage} 
                         messages={messages} 
@@ -171,6 +208,7 @@ export default function Home() {
                         inCall={inCall}
                         medecinsOnligne={medecinsOnligne}
                         setshowVilles={setshowVilles}
+                        nomVille={nomVille}
                     />
                 </Container>                      
                 
@@ -229,13 +267,14 @@ function Ticket(props){
     }
 
     const deleteTicket = () => {
-        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} )
+        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} );
         props.setshowVilles(true)
     }
 
-    const finTicket  = () => {
-        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} )
-        props.setshowVilles(true)
+    const finTicket  = (e) => {
+        // e.preventDefault();
+        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} );
+        props.setshowVilles(true);
         // finTicket
     }
     if( props.inCall === "video" || props.inCall === "audio"){
@@ -247,8 +286,8 @@ function Ticket(props){
     else if(medecinHorsLigne){
         return (
             <div>
-                Ce médecin est hors ligne
-                <button className="btn btn-primary" onClick={deleteTicket}> je veux plus attendre ce médecin </button>
+                 {content.ticket.horsLigne.message[lang]} 
+                <button className="btn btn-primary" onClick={deleteTicket}> {content.ticket.horsLigne.button[lang]}  </button>
             </div>
         )
     }
@@ -263,6 +302,7 @@ function Ticket(props){
                 messages={props.messages}
                 sendMessage={props.sendMessage}
                 idTicket={idTicket}
+                nomVille={props.nomVille}
             />
         </div>
     ) 
@@ -271,11 +311,11 @@ function Ticket(props){
     else if (props.ticket.status === 0){
         return(
             <div>
-            <h4>Bienvenue au lobby </h4>
-            <h5>Vous êtes maintenant au queue d'attente du médecin {props.medecin.nom} votre tours viens après {props.number} personne. Chaque personne prend génèralement 5 à 10 minute </h5>
-            <p>Quand votre tours vas arriver vous passez directement en discusion avec votre mèdecins</p>
+            <h3 className="text-center mt-3"> {content.ticket.Loby.titre[lang]}  </h3>
+            <h5 className="text-center mt-3">{content.ticket.Loby.soustitre[lang]} {props.nomVille}</h5>
+            <p className="text-center mt-3"> {content.ticket.Loby.message[lang]} </p>
             <div className="col text-center mt-4 mb-5">
-            <button className="btn btn-primary" onClick={deleteTicket}> Je veux plus attendre ce médecin </button>
+            <button className="btn btn-primary" onClick={deleteTicket}>{content.ticket.Loby.button[lang]}  </button>
             </div>
         </div>
         )
@@ -283,7 +323,7 @@ function Ticket(props){
     else if(props.ticket.status === -2){
         return(
          <div>
-             Fin de la discussion avec votre médecin
+             <h3 className="text-center mt-5"> {content.ticket.end[lang]}  </h3>
              <Feedback finTicket={finTicket} id_ticket ={idTicket} />
          </div>
      ) 
@@ -292,14 +332,12 @@ function Ticket(props){
      else if(props.ticket.status === 1){
         return(
          <div>
-
-             vous avez manquer la discussion avec votre médecin attender quelque instant, votre médecin vas vous repparler
+            {content.ticket.manquer.titre[lang]}
              {!ready ?
-                 <button className="btn btn-primary" onClick={setReady} > maintenant disponible </button>
+                 <button className="btn btn-primary" onClick={setReady} > {content.ticket.manquer.button[lang]} </button>
                  :
-                <div>vous êtes maintenant prêt </div> 
+                <div> {content.ticket.manquer.pret[lang]} </div> 
              }
-                
          </div>
      ) 
  
@@ -321,7 +359,7 @@ function ListeMedecin(props){
             } )
            setMedecins(res.data)
        })
-       .catch(error =>{ console.log(error)})
+       .catch(error =>{ console.log('on a pas pu récupérer la liste des médecin lié à la ville demander')})
    
    }, []);
 
@@ -342,20 +380,20 @@ function ListeMedecin(props){
        }else{
            
         let medecinDiv = event.currentTarget
-        let paragraphe = medecinDiv.querySelector(".p")
-        paragraphe.innerText = 'Ce médecin est hors ligne'
+        let paragraphe = medecinDiv.querySelector(".p");
+        paragraphe.innerText = content.listemedecins.horsligne[lang]
     }
     
    }
     return(
         <Container className="mt-5">
-             <div className="retour-ville"> <span onClick={ () => props.setShowVille("")}> <FaArrowLeft color="#fff" /> Retour </span>  </div>
+             <div className="retour-ville"> <span onClick={ () => props.setShowVille("")}> <FaArrowLeft color="#fff" /> {content.listemedecin.retour[lang]} </span>  </div>
         <Row>
             {
                 medecins.map((medecin, index) =>
                 <Col lg="4" key={index} className="my-3">
                     <div onClick={ (e) => handleClick(medecin, e)} className={medecin.onligne ? "medecin onligne" : "medecin offligne"} >
-                        <MedecinImage onligne={medecin.onligne} name={"docteur "+ (index + 1)} image={medecine} />
+                        <MedecinImage onligne={medecin.onligne} name= {content.listemedecin.medecin[lang] + (index + 1)} image={medecine} />
                     </div>
                 </Col>
                 )
@@ -368,16 +406,16 @@ function ListeMedecin(props){
 
 function MedecinImage(props){
     return(
-        <figure style={{  background: "#038DFE"  }} className="">
-        <img src={props.image} alt={props.name} />
+        <figure  className="effect-apollo">
+        <img src={props.image} className="w-100"   alt={props.name} />        
         <figcaption className={props.onligne ? "onligne": "offline"}>
             <div className={props.onligne ? "onligne status": "status offline"}>
                 <BsCircleFill color={props.onligne ? "#5cb85c": "#d9534f"} />
-    <span>{ props.onligne? "en ligne": "hors ligne"}</span>
+    <span>{ props.onligne? content.listemedecin.medecinenligne[lang] : content.listemedecin.medecinhorsligne[lang]}</span>
             </div>
             <p className="p">{props.subtitle}</p>
             <div className="d-flex flex-column justify-content-end align-items-center h-100">
-                <h5 className="">{props.name}</h5>
+                <h3 className="mb-3">{props.name}</h3>
                 
             </div> 
         </figcaption>
@@ -409,6 +447,7 @@ function HoverableImage(props){
 
         Axios.get(`${ENDPOINT}api/villes?app_key=base64:HWKowqxmoXiNlACwEpk+ZqDie3DAQgtqvUncFXotLy4=` , {headers: {'Content-Type': 'application/json'}})
         .then(res => {
+            console.log(res.data)
             if (isSubscribed) {
                 setVilles(res.data)
               }
@@ -427,8 +466,8 @@ function HoverableImage(props){
                 {
                     villes.map((ville, index) =>
                     <Col lg="4" key={index} className="my-3">
-                        <div onClick={ () => props.setVille(ville.id)} className="ville" >
-                            <HoverableImage name={ville.nom_ville} image={imageVilles[ville.id -1]} />
+                        <div onClick={ () => props.setVille(ville)} className="ville" >
+                            <HoverableImage name={ (lang === "fr") ? ville.nom_ville: ville.nom_ville_arabe } image={imageVilles[ville.id -1]} />
                         </div>
                     </Col>
                     )
@@ -437,8 +476,95 @@ function HoverableImage(props){
         </Container>
     )
 }
+
 let content = {
     title:{fr:"Consultation en ligne",ar:"الإستشارة عن بعد"},
     subtitle:{fr:"Choisir votre ville de résidence ensuite votre médecin et attendez votre tours", 
-        ar:"أختر المدينة التي تقطن فيها و بعد ذلك الطبيب الذي تريد أن تستشيره و انتظر دورك"}
+        ar:"أختر المدينة التي تقطن فيها و بعد ذلك الطبيب الذي تريد أن تستشيره و انتظر دورك"
+    },
+    modal:{
+        titre:{ 
+            fr:"Choisir un pseudo",
+            ar:""
+        },
+        body:{
+            fr:"entrer un nom pour l'afficher à vos médecin lors des consultations"
+        },
+        button:{
+            fr:"Enregistrer",
+            ar:""
+        }       
+    },
+    ticket:{
+        horsLigne:{
+            message:{
+                fr:"Ce médecin est hors ligne",
+                ar:""  
+            },
+            button:{
+                fr:"je veux plus attendre ce médecin",
+                ar:""
+            }
+        },
+        Loby:{
+            titre : {
+                fr:" Bienvenue au lobby ",
+                ar:""
+            },
+            soustitre : {
+                fr:"Vous êtes maintenant au queue d'attente du médecin de la ville",
+                ar:""
+            },
+            message : {
+                fr:"Quand votre tours vas arriver vous passez directement en discussion avec votre médecin",
+                ar:""
+            },
+            button : {
+                fr:"Je veux plus attendre ce médecin",
+                ar:""
+            }
+        },
+        end:{
+            fr:"Fin de la discussion avec votre médecin",
+            ar:""
+        },
+        manquer:{
+            titre:{
+                fr:"vous avez manquer la discussion avec votre médecin attender quelque instant, votre médecin vas vous repparler",
+                ar:""
+            },
+            button:{
+                fr:"maintenant disponible",
+                ar:""
+            },
+            pret:{
+                fr:"vous êtes maintenant prêt, vous serez le prochain à être consulter avec ce médecin ",
+                ar:""
+            },
+        },
+    },
+    listemedecin:{
+        retour:{
+            fr:"retour",
+            ar:""
+        },
+        horsligne:{
+            fr:"Ce médecin est hors ligne",
+            ar:""
+        },
+        medecin:{
+            fr:"medecin ",
+            ar:""
+        },
+        medecinhorsligne:{
+            fr:"hors ligne",
+            ar:""
+        },
+        medecinenligne:{
+            fr:"en ligne",
+            ar:""
+        }
+
+    }
+    
 }

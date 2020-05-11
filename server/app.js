@@ -8,15 +8,11 @@ const app = express();
 const path = require('path');
 
 const bodyParser = require('body-parser');
-const videoCall = require('./routes/videoCall');
 const chat = require('./routes/chat');
 const upload = require('./routes/upload');
 
 const http = require('http');
 const server = http.createServer(app);
-
-const socketio = require('socket.io');
-const io = socketio(server);
 
 app.use(cors())
 
@@ -38,15 +34,13 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
-app.use(videoCall)
 app.use(chat)
 app.use(upload)
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-const { chatMAnager }= require('./controllers/ChatController')
-
-chatMAnager(io)
+const { startIo }= require('./controllers/ChatController')
+startIo(server)
 
 connection.sync()
           .then(result => {

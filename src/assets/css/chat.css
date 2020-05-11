@@ -100,10 +100,10 @@
   min-height: 50vh;
 } */
 .content {
-    height: 75%;
+    height: calc(100% - 60px);
     overflow: hidden;
     position: relative;
-    padding-bottom: 25px;
+    padding-bottom: 15px;
   }
   
   .messages {
@@ -112,7 +112,6 @@
     max-height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
-    margin-bottom: 15px;
   }
   .messages::-webkit-scrollbar {
     width: 3px;
@@ -173,7 +172,7 @@
   
   }
   .discussion .messageForm{
-    background-color:rgb(230, 228, 228);
+    background-color:#f5f5f5;
     padding: 12px 0px;
     position: absolute;
     width: calc(100% - 1px);
@@ -425,7 +424,7 @@ figure {
 	/* height: 100%; */
 	text-align: center;
  
-  border-radius: 45%;
+  border-radius: 50%;
   -webkit-box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);
   -moz-box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);
   box-shadow: 16px 40px 82px 0px rgba(0,0,0,0.5);}
@@ -490,8 +489,8 @@ align-items: center;
   border: 1px solid #5cb85c;
 }
 .medecin figure figcaption.offline h5 {
-  color: #d9534f;
-  border: 1px solid #d9534f;
+  color: #000;
+  border: 1px solid #000;
 }
 .medecin figure .status {
   border : 0px;
@@ -640,5 +639,10 @@ figure.effect-apollo:hover h5 {
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 300ms, transform 300ms;
+  }
+  .circle_online{
+    color: rgb(92, 184, 92);
+    width: 1.3em;
+    height: 1.3em;
   }
   

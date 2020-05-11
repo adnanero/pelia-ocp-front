@@ -28,18 +28,18 @@ return (
 
   <form className="messageForm"  >
       <Row className="chatContainer m-0">
-        <Col lg="10">
+        <Col lg="12">
           <input type="text" name="message" className="inputChat" placeholder="Ecrire votre message..."
             value={message}
             onChange={({ target: { value } }) => setMessage(value.replace(/^\s+/g, ''))}
             onKeyPress={event => event.key === 'Enter' && sendMessage(event)} />
         </Col>
         <Col lg="2">
-          <Row className="justify-content-around align-items-center">
+          {/* <Row className="justify-content-around align-items-center">
             <label htmlFor="document"> <FaPaperclip color= "#435f7a" cursor= "pointer" className="attachment" size="1.5rem" opacity= "0.5" /> </label>
           <input id="document" style={{display: "none"}} type="file" name="file" onChange={onChangeHandler}/>
             <button className="SendMsgBtn" type="button" onClick={e => sendMessage(e)}> {(message === "")  ? <IoMdMic /> : <IoIosSend size="1.5rem" /> }  </button>
-          </Row>
+          </Row> */}
             
         </Col>
       </Row>

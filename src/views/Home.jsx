@@ -11,7 +11,7 @@ import {FaRegQuestionCircle} from 'react-icons/fa'
 
 import Telemecine from './../assets/img/telemedicine.png'
 
-import LogoPng from './../assets/img/pelia-logo.png'
+import LogoPng from './../assets/img/pelia_logo.png'
 import PeliaBanner from './../assets/img/pelia_banner.svg'
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import medecin from './../../../../assets/img/medecin/doctor.png'
+import medecin from './../../../../assets/img/medecin/femme.png'
 import { makeStyles } from '@material-ui/core/styles';
 import {CircularProgress} from '@material-ui/core';
 
@@ -7,15 +7,16 @@ import { Button} from 'react-bootstrap'
 
 import {BsCircleFill} from 'react-icons/bs';
 import { FaPhone, FaVideo, FaCheck ,FaArrowAltCircleLeft} from 'react-icons/fa'
-import {BsFillChatFill} from 'react-icons/bs'
+import {BsFillChatFill, BsChat, BsArrowLeft} from 'react-icons/bs'
+import {FiPhoneCall, FiVideo} from 'react-icons/fi'
 
-const InfoBar = ({ user, resolved, audioCall, videoCall, onConsuting, respondingProcess,showConversationHandler,chatIcon,showConversation }) => (
+const InfoBar = ({ user, resolved, titre, audioCall, videoCall, onConsuting, respondingProcess,showConversationHandler,chatIcon,showConversation }) => (
   <div className="infoBar">
     <div className="leftInnerContainer">
-        <BsCircleFill />
+        <BsCircleFill className="circle_online" />
           <div className="profile">
           <img className="profile-img" src={medecin} alt="" />
-          <p className="upper"> { "dr. " + user.nom + " " + user.prenom} </p>
+          {user.type === 'patient' ? <p className="upper"> {'Medecin de la ville : ' + titre} </p>  :<p className="upper"> pseudo patient:  {titre} </p>}          
         </div>
      
       
@@ -37,7 +38,7 @@ const InfoBar = ({ user, resolved, audioCall, videoCall, onConsuting, responding
             valeur="" 
             sending={respondingProcess} 
             IconSuccess={FaCheck} 
-            Icon={<FaPhone size="1.5rem" />}
+            Icon={<FiPhoneCall size="1.5rem" />}
         />
           {/* <FaPhone /> */}
         </div>
@@ -51,7 +52,7 @@ const InfoBar = ({ user, resolved, audioCall, videoCall, onConsuting, responding
             valeur="" 
             sending={respondingProcess} 
             IconSuccess={FaCheck} 
-            Icon={<FaVideo size="1.5rem" />}
+            Icon={<FiVideo size="1.5rem" />}
         />
         {/* <FaVideo /> */}
         </div>
@@ -65,7 +66,7 @@ const InfoBar = ({ user, resolved, audioCall, videoCall, onConsuting, responding
             valeur="" 
             sending={respondingProcess} 
             IconSuccess={FaCheck} 
-            Icon={showConversation ? <FaArrowAltCircleLeft size="1.5rem" /> : < BsFillChatFill size="1.5rem"/>}
+            Icon={showConversation ? <BsArrowLeft size="2rem" stroke-width="1.4" /> : < BsChat size="1.8rem" stroke-width=".6"/>}
         />
         {/* <FaVideo /> */}
         </div>:null}

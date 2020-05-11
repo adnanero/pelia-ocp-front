@@ -23,7 +23,7 @@ const MedecinChat = () =>{
 
 }
 
-const Chat = () => {
+const Chat = ({ville}) => {
 
   const [user, setUser ] = useState({name: '', id:''});
   const [selectedUser, setSelectedUser] = useState("");
@@ -39,12 +39,12 @@ const Chat = () => {
 
   const ENDPOINT = baseUrl.node;
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(ENDPOINT+"packtchat");
     let userAuth ={};
     if(Cookies.get('user') !== undefined){
       userAuth = JSON.parse(Cookies.get('user'));
     }
-    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom,  id: userAuth.id, type: "medecin"}
+    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom, ville ,  id: userAuth.id, type: "medecin"}
     setUser(userSocket)
 
     socket.emit('join',  userSocket , (response) => {
@@ -127,8 +127,10 @@ const passingConsulting = () => {
     event.preventDefault();
 
     if(message) {
-      socket.emit('sendMessage', {message, selectedUser: tickets[selectedUser], user }, () => setMessage(''));
-    }
+      socket.emit('sendMessage', {message, selectedUser: tickets[selectedUser], user }, (message) =>{
+        setMessage('')
+        setMessages(messages => [ ...messages, message ]);
+     });    }
   }
   const showConversationHandler = () => {
     setShowConversation(!showConversation)
@@ -142,22 +144,20 @@ const passingConsulting = () => {
     
     setInCall("video")
   }
-  const medecinReady = () =>{
-    // socket.emit('call-patient', { selectedUser: tickets[selectedUser], type:inCall, user });
-  } 
 
   if(inCall=== "audio" || inCall === "video"){
     return(
-      <VideoChat socket={socket} patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} medecinReady={medecinReady} />
+      <VideoChat socket={socket} patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} />
     )
   }
+  console.log(tickets[selectedUser])
   if(window.innerWidth <= 768){
-
+    
   return (
       <div className="chat">
         <Row className="justify-content-around ">
           <Col lg="10" className = "bg-white p-0 discussion-container">
-          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
+          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
           <Row className="discussion m-0">        
       {(onConsuting && showConversation) ?
         <Col lg="8" className="chat-messages p-0">
@@ -197,7 +197,7 @@ const passingConsulting = () => {
          <div className="chat">
          <Row className="justify-content-around ">
            <Col lg="10" className = "bg-white p-0 discussion-container">
-           <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
+           <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={ (tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
           <Row className="discussion m-0">
           <Col lg="4" className="p-0">
           <UsersOnline

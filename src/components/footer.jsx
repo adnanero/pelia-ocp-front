@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import {TiSocialLinkedinCircular, TiSocialTwitterCircular, TiSocialInstagramCircular, TiSocialFacebookCircular} from 'react-icons/ti'
-import LogoPng from './../assets/img/pelia-logo.png'
+import LogoPng from './../assets/img/pelia_logo.png'
 import { Container, Row, Col, Navbar, Nav, Alert } from 'react-bootstrap';
 import {Link } from "react-router-dom";
 
@@ -47,7 +47,7 @@ export default function footer() {
 
                 <Row className="justify-content-center mt-5">
                         <div className="footer_top d-flex flex-column justify-content-center">
-                            <Link className="d-flex justify-content-center" to="/"> <img src={LogoPng} width="10%" alt="" /> </Link>
+                            <Link className="d-flex justify-content-center" to="/"> <img src={LogoPng} width="40%" alt="" /> </Link>
                             <div className="d-lg-block d-none">
                                 <Navbar className="navbar navbar-expand-lg navbar-light justify-content-center">
                                     <div className="collapse navbar-collapse offset">

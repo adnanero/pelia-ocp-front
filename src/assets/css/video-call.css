@@ -150,6 +150,7 @@
     }
   }
   .header-call{
+    width:100%;
     position: fixed;
     z-index: 3;
     top: 0;
@@ -273,9 +274,9 @@
 }
 
 .feedback-container h1 {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: 500;
-  margin-top: -5px;
+  /* margin-top: -5px; */
   margin-bottom: 20px;
   color: #6E787C
 }

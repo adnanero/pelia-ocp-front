@@ -66,11 +66,11 @@ module.exports.addMedecin = ({ socket_id, name, id, nom, prenom }) => {
   return { error:false, user, medecinsOnligne: medecins, tickets: tickets[user.id] };  
 }
 
-module.exports.addPatient = ({ socket_id, name, id, type }) => {
+module.exports.addPatient = ({ socket_id, name, id, pseudo }) => {
   if(!name) return { error: 'Username are required.' };
-
+  console.log(pseudo)
   name = name.trim().toLowerCase();
-  const user = { socket_id, id, name, type : "patient", state: "conected" };
+  const user = { socket_id, id, name, pseudo, type : "patient", state: "conected" };
  
     const existingUser = users.find((user) => user.id === id && user.name === name);
     let message= "";
@@ -100,7 +100,7 @@ module.exports.addPatient = ({ socket_id, name, id, type }) => {
 module.exports.addTicket = ({ medecin, user, socket_id }) => {
   if(!medecin) return { error:true, message: 'aucun médecin choisit' };
 
-  const ticket = { socket_id, name: user.name, id: user.id, status: 0, state : "conected" };
+  const ticket = { socket_id, pseudo: user.pseudo, name: user.name, id: user.id, status: 0, state : "conected" };
   
   let ticketMedecin = tickets[medecin.id];
   let count= 0;

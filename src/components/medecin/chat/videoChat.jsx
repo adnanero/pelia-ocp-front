@@ -8,7 +8,7 @@ import {FaPhoneSlash, FaCheck} from 'react-icons/fa'
 
 import callerTone from './../../../assets/media/ringPhone.mp3'
 
-import LogoPng from './../../../assets/img/pelia-logo.png'
+import LogoPng from './../../../assets/img/pelia_logo.png'
 
 
 export default class ElemenetsCall extends Component {

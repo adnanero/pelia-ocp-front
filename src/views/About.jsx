@@ -159,15 +159,15 @@ function Mission(){
 let content = {
     title:{fr:"Qui sommes-nous ?",ar:"من نحن ؟"},
     subtitle:{
-        fr:"À Pelia, nous pensons qu'ensemble, nous pouvons dépasser cette période critique.",
-        ar:"  نعتقد أنه يمكننا معا تجاوز هذه الفترة الحرجة Pelia في."    
+        fr:"À Pelia.ma, nous pensons qu'ensemble, nous pouvons dépasser cette période critique.",
+        ar:"  نعتقد أنه يمكننا معا تجاوز هذه الفترة الحرجة Pelia.ma في."    
     },
     who:{
         title:{fr:"Une équipe pluridisciplinaire",ar:"فريق متعدد التخصصات"},
         body:[
             {
-                fr:"Nous sommes une équipe constituée de 4 développeurs web futurs lauréats de l'école YouCode située à la ville Youssoufia. Chacun d'entre nous est issu d'une origine et background différent ce qui donne la force à notre équipe dans tous les domaines nécessaires pour la proposition de solutions parfaitement adaptées à vos besoins et pour faciliter vos tâches de la vie quotidienne.",
-                ar:"نحن فريق مكون من 4 مبرمجين ويب خرجين مدرسة Youcode هذه السنة الواقعة في مدينة اليوسفية. كل منا قد اتى من خلفيات و أصول مختلفة مما يعطي القوة لفريقنا في جميع المجالات الضرورية لنقدم لك حلولًا مناسبة تمامًا لاحتياجاتك ولتيسير مهام حياتك يوميا"
+                fr:"Pelia.ma est une plateforme de téléconsultation, par une équipe de 4 personnes. Chaqu'un d'entre nous est issu d'une origine et background différent ce qui donne la force à notre équipe dans tous les domaines nécessaires pour la proposition de solutions parfaitement adaptées à vos besoins et pour faciliter vos tâches de la vie quotidienne.",
+                ar:"Pelia.ma هي منصة للإستشارة عن بعد ، من إنشاء فريق من 4 أشخاص. يأتي كل منا من أصل وخلفية مختلفة مما يعطي القوة لفريقنا في جميع المجالات اللازمة لاقتراح حلول مناسبة تمامًا لاحتياجاتك ولتيسير مهامك في الحياة اليومية."
             }
         ]
 
@@ -197,7 +197,7 @@ let content = {
     {
         photo: Abdou,
         nom: {fr:"Abderrhmane EL FILALI", ar:"عبد الرحمان الفيلالي"},
-        specialite:{fr: "développeur mobile", ar:""},
+        specialite:{fr: "Développeur mobile", ar:"مطور ويب"},
         facebook:"#",
         linkedin:"#",
         twitter:"#",
@@ -205,15 +205,15 @@ let content = {
     },{
         photo: Ahmed,
         nom: {fr: "Ahmed KHACHIA ERRAHMAN", ar:"احمد خاشع الرحمن"},
-        specialite:{fr: "marketing", ar:""},
+        specialite:{fr: "Responsable Marketing", ar:""},
         facebook:"#",
         linkedin:"#",
         twitter:"#",
         insta:"#"
     },{
         photo: Fouzia,
-        nom: {fr: "Fouzia BAlIBLA", ar:"فوزية بليبلة"},
-        specialite:{fr: "Developpeuse web", ar:""},
+        nom: {fr: "Fouzia BALIBLA", ar:"فوزية بليبلة"},
+        specialite:{fr: "Community manager", ar:""},
         facebook:"#",
         linkedin:"#",
         twitter:"#",
@@ -221,7 +221,7 @@ let content = {
     },{
         photo: Adnane,
         nom: {fr: "Adnane ROUHI" , ar:"عدنان الروحي"},
-        specialite:{fr: "électronique", ar:""},
+        specialite:{fr: "Expert en électronique", ar:""},
         facebook:"#",
         linkedin:"#",
         twitter:"#",

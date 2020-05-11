@@ -34,30 +34,34 @@ return(
       <div className="tickets-infos">
       { nmbr_ticket ?
       <div>
-        vous avez ecore : {nmbr_ticket} en attente <br />
+        <h5 className="text-center"> Vous avez ecore : {nmbr_ticket} patients en attente </h5><br />
     
           {
             onConsuting &&
-            <div className="action-consulting">
-              <button className="btn btn-primary" onClick={ finTicket }>fermer le ticket</button>
-              <button className="btn btn-primary" onClick={ attenteTicket }>mettre en attente</button>
+            <div className="action-consulting col text-center align-items-center">
+              <button className="btn btn-primary" onClick={ finTicket }>Fermer le ticket</button>
+              <button className="btn btn-primary" onClick={ attenteTicket }>Mettre en attente</button>
             </div>
           }
           { !onConsuting && nmbr_ticket > 0 &&
-            <button className="btn btn-primary" onClick={ passingConsulting }>patient suivant</button>
+            <div className="col text-center"> 
+            <button className="btn btn-primary mt-5" onClick={ passingConsulting }>Patient suivant</button>
+          </div>
           }
       </div>
       :
-      <div className="tickets d-flex active">
-          vous n'avez encore aucun patient sur votre liste
+      <div className="tickets d-flex active text-center col">
+        <h5 className="text-center"> Vous n'avez encore aucun patient sur votre liste </h5>
+         
       </div>
       }
-    <div className="resolved">
-      vous avez faite {resolved} consultation aujourd'hui
-    </div>
+    
       </div>
 
       
+    </div>
+    <div className="resolved text-center">
+      Vous avez faite {resolved} consultation aujourd'hui
     </div>
   </div>
 );

@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import LogoPng from './../assets/img/pelia-logo.png'
+import LogoPng from './../assets/img/pelia_logo.png'
 
 const logo = () => {
     return (

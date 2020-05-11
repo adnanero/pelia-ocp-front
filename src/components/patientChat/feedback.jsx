@@ -8,6 +8,11 @@ import {FaPaperPlane} from 'react-icons/fa'
 import { Col, Row, Collapse, Alert } from 'react-bootstrap';
 import ButtonSubmit from './../Button/index';
 import baseUrl from './../../config'
+import Cookies from 'js-cookie';
+
+
+let lang = Cookies.get('lang')
+lang = (lang === undefined)? "fr" : lang
 
 const colors = { 
     visage : [
@@ -133,23 +138,23 @@ const SectionRepeat =(props) => {
                       <div id="example-collapse-text">
                       <form onSubmit={handleSubmit}>
                 <div className="feedback-container">
-                    <h1>Comment c'est passer votre consultation ?</h1>
+                    <h4> {content.titre[lang]} </h4>
                     <SectionRepeat newRating={newRating} setNewRating={ (newRate) => setNewRating(newRate)} />
                 </div>
                 <Row className="justify-content-around text-center">
                     <InputIcone
-                        label="comment peut-on améliorer notre servie"
+                        label= {content.input.label[lang]}
                         InputLabelProps={{style:{marginBottom: "12px", width: "150%" }}}
                         Icone={FaPaperPlane}
-                        placeholder= "suggestion ..."
+                        placeholder= {content.input.placeholder[lang]}
                         name="suggestion"
                         value={suggestion}
                         onChange={ (event) => setSuggestion(event.target.value) } 
                     />
                     </Row>
                     <Row className="justify-content-around my-5">
-                        <ButtonSubmit success={success} type="submit" sending={sending} valeur= "Enregistrer" />
-                        <button onClick={props.finTicket} className="btn btn-primary p-0"> Annuler </button>
+                        <ButtonSubmit success={success} type="submit" sending={sending} valeur= {content.save[lang]} />
+                        <button onClick={props.finTicket} type="button" className="btn btn-primary p-0"> {content.annuler[lang]} </button>
                     </Row>
                 
             </form>
@@ -158,7 +163,7 @@ const SectionRepeat =(props) => {
                   <Collapse in={isSend}>
                       <div id="example-collapse-text">
                           <Alert  variant="success">
-                                Merci pour votre contribution à l'amélioration de nos services. On va prendre vos remarques en cocédiration
+                            {content.alert[lang]}
                           </Alert>
                       </div>
                   </Collapse>
@@ -166,3 +171,47 @@ const SectionRepeat =(props) => {
     )
 }
 export default Feedback
+
+
+let content = {
+    title:{fr:"Comment c'est passer votre consultation ? ",ar:"الإستشارة عن بعد"},
+    subtitle:{fr:"Choisir votre ville de résidence ensuite votre médecin et attendez votre tours", 
+        ar:"أختر المدينة التي تقطن فيها و بعد ذلك الطبيب الذي تريد أن تستشيره و انتظر دورك"
+    },
+    input:{
+        label:{
+            fr:"Comment peut-on améliorer notre service",
+            ar:""
+        },
+        placeholder:{
+            fr:"suggestion ...",
+            ar:""
+        }
+    },
+    save:{
+        fr:"Enregistrer",
+        ar:""
+    },
+    annuler:{
+        fr:"Annuler",
+        ar:""
+    },
+    alert:{
+        fr:"Merci pour votre contribution à l'amélioration de nos services. On va prendre vos remarques en cocédiration",
+        ar:""
+    },
+    modal:{
+        titre:{ 
+            fr:"Choisir un pseudo",
+            ar:""
+        },
+        body:{
+            fr:"entrer un nom pour l'afficher à vos médecin lors des consultations"
+        },
+        button:{
+            fr:"Enregistrer",
+            ar:""
+        }       
+    },
+    
+}

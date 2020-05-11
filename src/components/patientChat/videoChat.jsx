@@ -11,7 +11,7 @@ import {FaPhoneSlash, FaPhone, FaCheck} from 'react-icons/fa'
 
 import callerTone from './../../assets/media/callertone.mp3'
 
-import LogoPng from './../../assets/img/pelia-logo.png'
+import LogoPng from './../../assets/img/pelia_logo.png'
 
 
 export default class ElemenetsCall extends Component {
@@ -35,10 +35,17 @@ export default class ElemenetsCall extends Component {
         }else{
             this.initiatorCallAudio()
         }
-        Axios.post(`${baseUrl.node}video-call/patient`, this.state.patient)
-        .then((res) => {
-            this.setupSocket({token: res.data.access_token, username: this.state.patient.name })
-        }).catch((r) => console.log("on a pas pus vous connecter"))
+        this.setupSocket()
+    }
+    componentWillUnmount(){
+        this.props.socket.removeAllListeners('patient-signal-call')
+        this.props.socket.removeAllListeners('patient-call')
+        this.props.socket.removeAllListeners('reject-call-patient')
+        this.props.socket.removeAllListeners('reject-call-patient')
+
+        if(this.state.peer){
+            this.state.peer.destroy();
+        }
     }
     setupSocket(){
         let socket = this.props.socket;
@@ -62,21 +69,6 @@ export default class ElemenetsCall extends Component {
             this.state.peer.signal(data);
         })
     }
-    componentWillUnmount(){
-        this.props.socket.removeAllListeners('patient-call')
-        this.props.socket.removeAllListeners('reject-call-patient')
-        this.props.socket.removeAllListeners('reject-call-patient')
-
-        if(this.pusher){
-            this.channel.unbind();
-            this.pusher.unsubscribe('presence-video-channel')
-        }
-        if(this.state.peer){
-            this.state.peer.destroy();
-        }
-    }
-
-  
     
      async initiatorCallVideo(){
 	     let options ={

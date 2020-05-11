@@ -49,9 +49,9 @@ function SignInSide() {
     setSending(true)
     let data={
       email:email,
-      password:password
+      password:password.toString()
     }
-    Axios.post(`${baseUrl.node}login` , data, {headers: {'Content-Type': 'application/json'}})
+    Axios.post(`${baseUrl.lumen}api/login` , data, {headers: {'Content-Type': 'application/json'}})
     .then(res => {
         Cookie.set("token",res.data.access_token, { expires: 0.5 });
         Cookie.set("user",res.data.user, { expires: 0.5 });

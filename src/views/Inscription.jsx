@@ -134,7 +134,6 @@ class ElementForm extends Component  {
             (this.state.sexe !== "")
              ){
                 let data = this.traitementDonnee();
-                console.log(data)
                 Axios.post(`${baseUrl.lumen}api/register` , data, {headers: {'Content-Type': 'application/json'}})
                 .then(res => {
                     this.setState({sending: false, success:true});
