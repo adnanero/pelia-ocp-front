@@ -137,11 +137,12 @@ const SectionRepeat =(props) => {
              <Collapse in={!isSend}>
                       <div id="example-collapse-text">
                       <form onSubmit={handleSubmit}>
+	    {/*
                 <div className="feedback-container">
                     <h4> {content.title[lang]} </h4>
                     <SectionRepeat newRating={newRating} setNewRating={ (newRate) => setNewRating(newRate)} />
                 </div>
-                <Row className="justify-content-around text-center">
+	                    <Row className="justify-content-around text-center">
                     <InputIcone
                         label= {content.input.label[lang]}
                         InputLabelProps={{style:{marginBottom: "12px", width: "150%" }}}
@@ -151,10 +152,11 @@ const SectionRepeat =(props) => {
                         value={suggestion}
                         onChange={ (event) => setSuggestion(event.target.value) } 
                     />
-                    </Row>
+                    </Row>*/}
                     <Row className="justify-content-around my-5">
-                        <ButtonSubmit success={success} type="submit" sending={sending} valeur= {content.save[lang]} />
-                        <button onClick={props.finTicket} type="button" className="btn btn-primary p-0"> {content.annuler[lang]} </button>
+	    
+	    {/*<button onClick={props.finTicket} type="button" className="btn btn-primary " style={{paddingTop:20,paddingBottom:20}}> Envoyer </button>*/}
+	    		<button onClick={props.finTicket} type="button" className="btn btn-primary " style={{paddingTop:20,paddingBottom:20}}> {content.annuler[lang]} </button>
                     </Row>
                 
             </form>
@@ -181,36 +183,37 @@ let content = {
     input:{
         label:{
             fr:"Comment peut-on améliorer notre service",
-            ar:""
+            ar:"كيف يمكننا تحسين خدماتنا"
         },
         placeholder:{
-            fr:"suggestion ...",
-            ar:""
+            fr:"Suggestion ...",
+            ar:"اقتراح"
         }
     },
     save:{
         fr:"Enregistrer",
-        ar:""
+        ar:"حفظ"
     },
     annuler:{
-        fr:"Annuler",
-        ar:""
+        fr:"Fin",
+        ar:"إنتهاء"
     },
     alert:{
         fr:"Merci pour votre contribution à l'amélioration de nos services. On va prendre vos remarques en cocédiration",
-        ar:""
+        ar:"شكرا لمساهمتك في تحسين خدماتنا"
     },
     modal:{
         titre:{ 
             fr:"Choisir un pseudo",
-            ar:""
+            ar:"اختر الإسم"
         },
         body:{
-            fr:"entrer un nom pour l'afficher à vos médecin lors des consultations"
+            fr:"Entrer un nom pour l'afficher à vos médecin lors des consultations",
+	    ar:"أدخل الإسم الذي سيظهر لأطبائك خلال الإستشارة الطبية"
         },
         button:{
             fr:"Enregistrer",
-            ar:""
+            ar:"حفط"
         }       
     },
     

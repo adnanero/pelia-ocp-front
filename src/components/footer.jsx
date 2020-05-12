@@ -36,7 +36,10 @@ let style = (lang === "ar")? {
 
 }
 
-export default function footer() {
+export default function footer(props) {
+	if(props.location.pathname === "/consultation"){
+		return null
+	}
     return (
 
 

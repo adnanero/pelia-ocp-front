@@ -18,17 +18,13 @@ import {TextField, ThemeProvider} from '@material-ui/core';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 import { Link } from 'react-router-dom';
-import Checkbox from '@material-ui/core/Checkbox';
 
 import Success from './../components/success'
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+
 import Cookies from 'js-cookie'
 import { useState } from 'react';
 
@@ -110,7 +106,6 @@ class ElementForm extends Component  {
             password_confirmation: "",
             villes:[],
             ville: "",
-	    sexe:0,
             fieldValidationErrors:{
                 nomError:false,
                 prenomError:false,
@@ -220,7 +215,6 @@ class ElementForm extends Component  {
         formData.email=this.state.email
         formData.prenom=this.state.prenom
         formData.id_ville=this.state.ville
-	formData.sexe = this.state.sexe
         formData.password=this.state.password
         formData.password_confirmation = this.state.password_confirmation
         return formData;
@@ -264,7 +258,7 @@ class ElementForm extends Component  {
                         label={content.form.input_nom.label[lang]} 
                         Icone={FaUserMd}
                         required={true}
-	                        name="nom"
+                        name="nom"
                         InputLabelProps={style.inputLabel}
                         onBlur={this.validateField} 
                         value={nom}
@@ -421,13 +415,7 @@ class ElementForm extends Component  {
                         </Collapse>
                     </Row>
 		    <Row className="inscription-input" style={style.text}>
-			<FormControl component="fieldset">
-				  <FormLabel component="legend">Sexe</FormLabel>
-				  <RadioGroup aria-label="Sexe" name="Sexe" value={this.state.sexe} onClick={(value)=>{this.setState({sexe:Number(value.target.value)})}}>
-				    <FormControlLabel value={0} control={<Radio />} label="Homme" />
-				    <FormControlLabel value={1} control={<Radio />} label="Femme" />
-				  </RadioGroup>
-			</FormControl>
+			import Checkbox from '@material-ui/core/Checkbox';
 		    </Row>
                     <Row className="inscription-input" style={style.text}>
                         <Collapse in={donneIncorecte}>

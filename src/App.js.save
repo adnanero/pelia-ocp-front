@@ -9,6 +9,7 @@ import 'react-modal-video/css/modal-video.min.css';
 
 import Admin from './layouts/admin'
 import Public from './layouts/public'
+import Consultation from './views/Consultation'
 
 
 import Medecin from './layouts/medecin'

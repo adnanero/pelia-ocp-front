@@ -8,7 +8,8 @@ import Inscription from './../views/Inscription'
 import About from './../views/About'
 import Contact from './../views/Contact'
 import Authentification from './../views/login'
-// import WhitWS from './../components/videochat/webSockets'
+import Consultation from './../views/Consultation'
+
 import Navbar from './../components/Navbars/navbar'
 import Footer from './../components/footer'
 import LangSwitcher from './../components/angSwitcher'
@@ -22,7 +23,7 @@ import {
 import { withRouter, Redirect } from "react-router";
 
 const HeaderWithRouter = withRouter(Navbar);
-
+const FooterWithRouter = withRouter(Footer);
 
 class ScrollToTop extends React.Component {
   componentDidUpdate(prevProps) {
@@ -69,12 +70,13 @@ class App extends Component {
                 <Route exact path="/about" render={props => <About {...props} />} />
                 <Route exact path="/medecin" render={props => <Medecin {...props} />} />
                 <Route exact path="/contact" render={props => <Contact {...props} />} />
-                <Route exact path="/login" render={props => <Inscription {...props} />} />
+	  	<Route exact path="/consultation" render={props => <Consultation {...props} /> } />
+                <Route exact path="/login" render={props => <Inscription {...props} />} /> 
                 <Route exact path="/authentification" render={props => <Authentification {...props} />} />
                 <Redirect to="/not-found" />
             </Switch> 
         </main>
-        <Footer />
+        <FooterWithRouter />
     </>
   )
     }

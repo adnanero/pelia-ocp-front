@@ -68,7 +68,7 @@ module.exports.addMedecin = ({ socket_id, name, id, nom, prenom }) => {
 
 module.exports.addPatient = ({ socket_id, name, id, pseudo }) => {
   if(!name) return { error: 'Username are required.' };
-  console.log(pseudo)
+
   name = name.trim().toLowerCase();
   const user = { socket_id, id, name, pseudo, type : "patient", state: "conected" };
  

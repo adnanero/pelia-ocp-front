@@ -8,6 +8,8 @@ import InfoBar from './infoBar/index';
 import VideoChat from './videoChat'
 import SendMessageForm from './sendingMessage/index';
 import { Redirect } from "react-router-dom";
+import medecine from "./../../../assets/img/medecin/homme.png";
+import medecineFemme from "./../../../assets/img/medecin/femme.png";
 
 
 import baseUrl from './../../../config'
@@ -43,8 +45,9 @@ const Chat = ({ville}) => {
     let userAuth ={};
     if(Cookies.get('user') !== undefined){
       userAuth = JSON.parse(Cookies.get('user'));
-    }
-    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom, ville ,  id: userAuth.id, type: "medecin"}
+    };
+    
+    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom, ville ,  id: userAuth.id, sexe: userAuth.sexe, type: "medecin"};
     setUser(userSocket)
 
     socket.emit('join',  userSocket , (response) => {
@@ -157,13 +160,13 @@ const passingConsulting = () => {
     
   return (
       <div className="chat">
-            <Row className="justify-content-around">
-                <h4> { "Docteur " + user.nom + " " + user.prenom} </h4>
+            <Row className="justify-content-around nom-medecin">
+                <h4><span className="pb-2 border-bottom border-white"> { "Docteur " + user.nom + " " + user.prenom}</span> </h4>
             </Row>
         <Row className="justify-content-around ">
           <Col lg="10" className = "bg-white p-0 discussion-container">
             
-          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? ( "Pseudo patient:" + tickets[selectedUser]["pseudo"]) : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
+          <InfoBar resolved={resolved} medecinImage={user.sexe == 0 ? medecine : medecineFemme} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? ( tickets[selectedUser]["pseudo"]) : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
           <Row className="discussion m-0">        
       {(onConsuting && showConversation) ?
         <Col lg="8" className="chat-messages p-0">
@@ -202,12 +205,12 @@ const passingConsulting = () => {
       <div className="chat">
          <div className="chat">
          <Row className="justify-content-around nom-medecin">
-                <h4> { "Docteur " + user.nom + " " + user.prenom} </h4>
+                <h4> <span className="pb-2 border-bottom border-white"> { "Docteur " + user.nom + " " + user.prenom} </span> </h4>
             </Row>
          <Row className="justify-content-around ">
            <Col lg="10" className = "bg-white p-0 discussion-container">
            
-           <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={ (tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
+           <InfoBar resolved={resolved} medecinImage={user.sexe == 0 ? medecine : medecineFemme} selectedUser={tickets[selectedUser]} titre={ (tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
           <Row className="discussion m-0">
           <Col lg="4" className="p-0">
           <UsersOnline

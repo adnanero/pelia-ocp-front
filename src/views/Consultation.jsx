@@ -16,7 +16,8 @@ import youssoufia from './../assets/img/villes/youssoufia.jpg'
 import khouribga from './../assets/img/villes/khouribga.jpg'
 import laayoune from './../assets/img/villes/laayoune.jpg'
 // import medecin from './../assets/img/medecin/doctor.png'
-import medecine from './../assets/img/medecin/femme.png'
+import medecine from './../assets/img/medecin/homme.png'
+import medecineFemme from './../assets/img/medecin/femme.png'
 
 import baseUrl from './../config'
 
@@ -79,10 +80,7 @@ export default function Consultation(){
         )
     }
     return(
-        <div id="consultation" className="consultation"> 
-            <Home pseudo={pseudo} />
-        </div>
-        
+        <Home pseudo={pseudo} />
     )
 }
 
@@ -102,6 +100,7 @@ function Home({pseudo}) {
 
     const [showVilles, setshowVilles] = useState(true)
     const [showMedecins, setshowMedecins] = useState(false)
+    const [changeBanner, setChangeBanner] = useState(false);
 
     const ENDPOINT =  baseUrl.node;
   
@@ -116,6 +115,7 @@ function Home({pseudo}) {
         Cookies.set("id",idGenerated, { expires: 1 });
       }
       let userSocket = {name: nameGenerated, pseudo, id: parseInt(idGenerated), type: "patient"}
+  
       setUser(userSocket)
   
       socket.emit('join',  userSocket , (response) => {
@@ -191,8 +191,8 @@ function Home({pseudo}) {
     
     return (
 
-        <div className="page">
-            <Banner title={content.title[lang]} subtitle={content.subtitle[lang]} style={{color:'white'}} banner={ContactBanner}  />
+        <div className="page chat_patient">
+	    <Banner title={content.title[lang]} subtitle={!changeBanner ? content.subtitle[lang] : "Vous êtes dans la liste d'attente , patientez s'il vous plaît"} style={{color:'white'}} banner={ContactBanner}  />
             {
                 ticket.name === user.name ?  
                 <Container>
@@ -221,14 +221,14 @@ function Home({pseudo}) {
                     timeout={300}
                     classNames="villes"
                     unmountOnExit >
-                        <Villes setVille={setVille} />
+                        <Villes setChangeBanner={setChangeBanner} setVille={setVille} />
                 </CSSTransition>
                 <CSSTransition
                     in={showMedecins}
                     timeout={300}
                     classNames="medecins"
                     unmountOnExit >
-                        <ListeMedecin addTicket={addTicket} medecinsOnligne={medecinsOnligne} setshowMedecins={setshowMedecins} setMedecin={setMedecin} ville={ville} setShowVille={setShowVille} />
+                        <ListeMedecin setChangeBanner={setChangeBanner} addTicket={addTicket} medecinsOnligne={medecinsOnligne} setshowMedecins={setshowMedecins} setMedecin={setMedecin} ville={ville} setShowVille={setShowVille} />
                 </CSSTransition>
             </Container>
             }
@@ -260,9 +260,7 @@ function Ticket(props){
         }
     })
     const saveTicket = () => {
-        let datetime = Date.now() - this.state.timeAppel;
-        datetime = datetime.toString();
-       Axios.post(`${baseUrl.lumen}api/ticket` , {datetime: datetime, id_medecin : props.medecin.id}, {headers: {'Content-Type': 'application/json'}})
+       Axios.post(`${baseUrl.lumen}api/ticket` , {id_medecin : props.medecin.id, nom_ticket: props.user.id}, {headers: {'Content-Type': 'application/json'}})
         .then(res => {
             setIdTicket(res.id_appel);
        });
@@ -287,9 +285,9 @@ function Ticket(props){
 
     else if(medecinHorsLigne){
         return (
-            <div>
-                 {content.ticket.horsLigne.message[lang]} 
-                <button className="btn btn-primary" onClick={deleteTicket}> {content.ticket.horsLigne.button[lang]}  </button>
+            <div className="col text-center">
+                 <h3 className="mt-3">{content.ticket.horsLigne.message[lang]}</h3> 
+                <button className="btn btn-primary mt-3" onClick={deleteTicket}> {content.ticket.horsLigne.button[lang]}  </button>
             </div>
         )
     }
@@ -333,10 +331,10 @@ function Ticket(props){
      }
      else if(props.ticket.status === 1){
         return(
-         <div>
-            {content.ticket.manquer.titre[lang]}
+         <div className="col text-center">
+           <h3 className="text-center mt-3"> {content.ticket.manquer.titre[lang]}</h3>
              {!ready ?
-                 <button className="btn btn-primary" onClick={setReady} > {content.ticket.manquer.button[lang]} </button>
+                 <button className="btn btn-primary mt-3" onClick={setReady} > {content.ticket.manquer.button[lang]} </button>
                  :
                 <div> {content.ticket.manquer.pret[lang]} </div> 
              }
@@ -361,7 +359,7 @@ function ListeMedecin(props){
             } )
            setMedecins(res.data)
        })
-       .catch(error =>{ console.log('on a pas pu récupérer la liste des médecin lié à la ville demander')})
+       .catch(error =>{ console.log('On a pas pu récupérer la liste des médecin lié à la ville demander')})
    
    }, []);
 
@@ -376,6 +374,7 @@ function ListeMedecin(props){
     
    const handleClick = (medecin, event) => {
        if(medecin.onligne){
+            props.setChangeBanner(true);
             props.setMedecin(medecin)
             props.setshowMedecins(false)
             props.addTicket(medecin)
@@ -395,7 +394,7 @@ function ListeMedecin(props){
                 medecins.map((medecin, index) =>
                 <Col lg="4" key={index} className="my-3">
                     <div onClick={ (e) => handleClick(medecin, e)} className={medecin.onligne ? "medecin onligne" : "medecin offligne"} >
-                        <MedecinImage onligne={medecin.onligne} name= {content.listemedecin.medecin[lang] + (index + 1)} image={medecine} />
+                        <MedecinImage medecin={medecin} onligne={medecin.onligne} name= {content.listemedecin.medecin[lang] + (index + 1)} image={medecin.sexe == 0 ?  medecine : medecineFemme } />
                     </div>
                 </Col>
                 )
@@ -407,9 +406,10 @@ function ListeMedecin(props){
 
 
 function MedecinImage(props){
+	
     return(
         <figure  className="effect-apollo">
-        <img src={props.image} className="w-100"   alt={props.name} />        
+	    <img src={props.image} className="w-100"   alt={props.name} />   
         <figcaption className={props.onligne ? "onligne": "offline"}>
             <div className={props.onligne ? "onligne status": "status offline"}>
                 <BsCircleFill color={props.onligne ? "#5cb85c": "#d9534f"} />
@@ -444,12 +444,16 @@ function HoverableImage(props){
    
      const ENDPOINT = baseUrl.lumen
      const [villes, setVilles] = useState([])
+
+     const setChangeBanner = () =>{
+        props.setChangeBanner(false)
+     }
     useEffect(() => {
+        setChangeBanner();
         let isSubscribed = true
 
         Axios.get(`${ENDPOINT}api/villes?app_key=base64:HWKowqxmoXiNlACwEpk+ZqDie3DAQgtqvUncFXotLy4=` , {headers: {'Content-Type': 'application/json'}})
         .then(res => {
-            console.log(res.data)
             if (isSubscribed) {
                 setVilles(res.data)
               }

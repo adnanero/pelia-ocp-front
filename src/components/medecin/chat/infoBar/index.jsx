@@ -10,13 +10,13 @@ import { FaPhone, FaVideo, FaCheck ,FaArrowAltCircleLeft} from 'react-icons/fa'
 import {BsFillChatFill, BsChat, BsArrowLeft} from 'react-icons/bs'
 import {FiPhoneCall, FiVideo} from 'react-icons/fi'
 
-const InfoBar = ({ user, resolved, titre, audioCall, videoCall, onConsuting, respondingProcess,showConversationHandler,chatIcon,showConversation }) => (
+const InfoBar = ({ user, resolved, titre, audioCall, videoCall, onConsuting, respondingProcess,showConversationHandler,chatIcon,showConversation,medecinImage }) => (
   <div className="infoBar">
     <div className="leftInnerContainer">
         <BsCircleFill className="circle_online" />
           <div className="profile">
-          <img className="profile-img" src={medecin} alt="" />
-          {user.type === 'patient' ? <p className="upper"> {'Medecin ' + titre} </p>  :<p className="upper"> {titre} </p>}          
+          <img className="profile-img" src={medecinImage} alt="" />
+          {user.type === 'patient' ? <p className="upper"> {'Medecin ' + titre} </p>  :<p className="upper"> {titre} </p>}   
         </div>
      
       
@@ -28,20 +28,6 @@ const InfoBar = ({ user, resolved, titre, audioCall, videoCall, onConsuting, res
     }
     {user.type === "medecin" && onConsuting &&
     <div className="rightInnerContainer">
-        <div className="phone-call m-0">
-        <ButtonProcess 
-            className="action" 
-            onClick={audioCall} 
-            type="button"   
-            variant="success" 
-            success={false} 
-            valeur="" 
-            sending={respondingProcess} 
-            IconSuccess={FaCheck} 
-            Icon={<FiPhoneCall size="1.5rem" />}
-        />
-          {/* <FaPhone /> */}
-        </div>
         <div className="video-call m-0">
         <ButtonProcess 
             className="action m-0" 

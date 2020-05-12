@@ -101,6 +101,13 @@ export default class NavbarPublic extends Component {
                                           </Col>
                                           <Col lg="4" className="bouton-container">
                                             <Nav as="ul"activeKey={location.pathname} style={style.all} className="nav justify-content-around" >
+                                                {/* <Nav.Item className="py-4" as="li">
+                                                  <Nav.Link as={Link} href='/medecin' style={{lineHeight: "0"}} className="inscription-btn" to="/medecin"> 
+                                                    <span className="inscrire navbar-right btn_btn">
+                                                    {   content.medecin[lang] }
+                                                    </span>
+                                                  </Nav.Link> 
+                                              </Nav.Item> */}
                                               <Nav.Item className="py-4" as="li">
                                               <Nav.Link style={{lineHeight: "0"}} className="inscription-btn" as={Link} href='/authentification' to="/authentification"> 
                                                   <span className="inscrire navbar-right btn_btn">

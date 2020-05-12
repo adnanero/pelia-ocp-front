@@ -159,7 +159,7 @@ export default function Authentification() {
   <div className="overlay"></div>
     <Row>
       <div className="inscription-info">
-          <h1 data-wow-duration="700ms" data-wow-delay="500ms" className="wow bounceInDown animated">Bienvenue sur Pelia !</h1>
+          <h1 data-wow-duration="700ms" data-wow-delay="500ms" className="wow bounceInDown animated">Bienvenue sur Pelia.ma !</h1>
           <p>vous ne savez pas de quoi il s'agit? vous êtes perdus ? vous pouvez toujours aller à la page d'accueil pour voir les descriptions des fonctionnalités qu'on propose à nos utilisateurs.</p>
           <Link data-wow-duration="700ms" data-wow-delay="500ms" to="/medecin"
               className="btn section-btn smoothScroll wow slideInUp animated mt-5">
