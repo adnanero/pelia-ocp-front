@@ -79,7 +79,10 @@ export default function Consultation(){
         )
     }
     return(
-        <Home pseudo={pseudo} />
+        <div id="consultation" className="consultation"> 
+            <Home pseudo={pseudo} />
+        </div>
+        
     )
 }
 
@@ -113,7 +116,6 @@ function Home({pseudo}) {
         Cookies.set("id",idGenerated, { expires: 1 });
       }
       let userSocket = {name: nameGenerated, pseudo, id: parseInt(idGenerated), type: "patient"}
-      console.log(userSocket)
       setUser(userSocket)
   
       socket.emit('join',  userSocket , (response) => {

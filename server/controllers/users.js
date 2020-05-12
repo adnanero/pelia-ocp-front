@@ -86,13 +86,14 @@ module.exports.addPatient = ({ socket_id, name, id, pseudo }) => {
       }else{
         message ="patient a déjà une ticket";
         let ticketsThisMedecin = tickets[existingUser.medecin];
-        let ticketUser = ticketsThisMedecin.find((ticket) => ticket.name === existingUser.name && ticket.id === existingUser.id);
-        if(ticketUser === undefined) return {message: "ticket non trouver", medecin: {}, ticket: {}, user: existingUser, medecinsOnligne: medecins } 
-        ticketUser = {...ticketUser, state: "conected"};
-        tickets[existingUser.medecin] = ticketsThisMedecin;
+        let ticketUser = ticketsThisMedecin.findIndex((ticket) => ticket.name === existingUser.name && ticket.id === existingUser.id);
+        if(ticketsThisMedecin[ticketUser] === undefined) return {message: "ticket non trouver", medecin: {}, ticket: {}, user: existingUser, medecinsOnligne: medecins } 
+        ticketsThisMedecin[ticketUser] = {...ticketsThisMedecin[ticketUser], state: "conected"};
+        tickets[existingUser.medecin] = ticketsThisMedecin
+        // tickets[existingUser.medecin] = ticketsThisMedecin;
         let medecin = medecins.find((med) => med.id === existingUser.medecin);
 
-        return { error:false, ticket:ticketUser, user, message, medecinsOnligne: medecins, medecin };
+        return { error:false, ticket:ticketsThisMedecin[ticketUser], tickets: tickets[existingUser.medecin] , user, message, medecinsOnligne: medecins, medecin };
       }
     }    
   

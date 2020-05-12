@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const connection = new Sequelize('pelia_ocp', 'root', '',{
+const connection = new Sequelize('pelia4', 'root', '',{
     host: 'localhost',
     dialect:'mysql'
 });

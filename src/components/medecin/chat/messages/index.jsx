@@ -30,8 +30,11 @@ const Message = ({ message: { text, user }, thisuser }) => {
 
   return (
         <div className={ (isSentByCurrentUser)? "messageContainer sent" : "messageContainer replies"}>
+          <div className="message">
             <p className="messageName">{ isSentByCurrentUser? "Moi" : user.type}</p>
             <p className="messageText">{text}</p>
+          </div>
+            
         </div>
   );
 }

@@ -53,6 +53,7 @@ const Chat = ({ville}) => {
       }else{
         setTickets(response.tickets)
         let index = response.tickets.findIndex((user) => ( user.status === -1)) 
+        // console.log(index);
         if(index !== -1){
           setSelectedUser(index);
           setConsulting(true);
@@ -107,6 +108,8 @@ const passingConsulting = () => {
         }
         setMessages([])
         setTickets(response.tickets)
+        // setT
+        setSelectedUser("")
       }
     });
   }
@@ -150,14 +153,17 @@ const passingConsulting = () => {
       <VideoChat socket={socket} patient={tickets[selectedUser]} medecin={user} type={inCall} setInCall={setInCall} />
     )
   }
-  console.log(tickets[selectedUser])
   if(window.innerWidth <= 768){
     
   return (
       <div className="chat">
+            <Row className="justify-content-around">
+                <h4> { "Docteur " + user.nom + " " + user.prenom} </h4>
+            </Row>
         <Row className="justify-content-around ">
           <Col lg="10" className = "bg-white p-0 discussion-container">
-          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
+            
+          <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? ( "Pseudo patient:" + tickets[selectedUser]["pseudo"]) : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
           <Row className="discussion m-0">        
       {(onConsuting && showConversation) ?
         <Col lg="8" className="chat-messages p-0">
@@ -195,8 +201,12 @@ const passingConsulting = () => {
     return (          
       <div className="chat">
          <div className="chat">
+         <Row className="justify-content-around nom-medecin">
+                <h4> { "Docteur " + user.nom + " " + user.prenom} </h4>
+            </Row>
          <Row className="justify-content-around ">
            <Col lg="10" className = "bg-white p-0 discussion-container">
+           
            <InfoBar resolved={resolved} selectedUser={tickets[selectedUser]} titre={ (tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
           <Row className="discussion m-0">
           <Col lg="4" className="p-0">
