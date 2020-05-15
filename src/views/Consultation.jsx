@@ -25,7 +25,6 @@ import Banner from './../components/BannerSimple'
 
 import ChatPAtient from './../components/patientChat/index'
 import VideoCall from './../components/patientChat/videoChat'
-import Feedback from './../components/patientChat/feedback'
 import { CSSTransition } from 'react-transition-group';
 
 import TextField from '@material-ui/core/TextField';
@@ -86,14 +85,14 @@ export default function Consultation(){
 
 function Home({pseudo}) {
     const [ville, setVilleSoiced] = useState("");
-    const [nomVille , setNomVille] =useState("")
-    const [medecin, setMedecin] = useState("")
-    const [medecinsOnligne, setMedecinsOnligne] = useState([])
+    const [nomVille , setNomVille] =useState("");
+    const [medecin, setMedecin] = useState("");
+    const [medecinsOnligne, setMedecinsOnligne] = useState([]);
+
     const [user, setUser ] = useState({});
     const [ticket, setTicket] = useState({})
-    const [number, setNumber] = useState("");
-
-    const [message, setMessage] = useState('');
+    const [onConsulting, setOnConsulting] = useState(false)
+    const [message, setMessage] = useState();
     const [messages, setMessages] = useState([]);
 
     const [inCall, setInCall] = useState("")
@@ -115,7 +114,6 @@ function Home({pseudo}) {
         Cookies.set("id",idGenerated, { expires: 1 });
       }
       let userSocket = {name: nameGenerated, pseudo, id: parseInt(idGenerated), type: "patient"}
-  
       setUser(userSocket)
   
       socket.emit('join',  userSocket , (response) => {
@@ -125,34 +123,30 @@ function Home({pseudo}) {
             setMedecinsOnligne(response.medecinsOnligne)
             setTicket(response.ticket)
             setMedecin(response.medecin)
+            if(response.ticket.name === userSocket.name){
+                setOnConsulting(true)
+            }
         }
       });
-
-      socket.on("medecin-switch", ({ user, type, medecinsOnligne }) => {
-        setMedecinsOnligne(medecinsOnligne)
-      });
+  
       socket.on('message', (message) => {
         setMessages(messages => [ ...messages, message ]);
       });
       socket.on("call-entring", ({ type }) => {
         setInCall(type)
       });
-      socket.on("ticket-switch", ({ type, tickets, ticket }) => {
-        setTicket(ticket)
-        if(type === "fin"){
-            let count= 0;
-            tickets.forEach(ticketVerify => {
-              if(ticketVerify.status === 0 || ticketVerify.status === 1){
-                count++;
-                if(ticketVerify.id === user.id){
-                    setNumber(count)
-                    return
-                }
-              }
-            });
-        }
+      socket.on("ticket-is-oppened", ({ ticket }) => {
+        setTicket(ticket);
+        setOnConsulting(true);
       });
-  
+      socket.on("ticket-is-closed", () => {
+        setOnConsulting(false);
+        setTicket({});
+        setshowVilles(true)
+      });
+      socket.on("medecins-changed", ( {medecinsOnligne} ) => {
+        setMedecinsOnligne(medecinsOnligne)
+      });
     }, [ENDPOINT]);
 
     const setVille = (ville) => {
@@ -161,13 +155,14 @@ function Home({pseudo}) {
         setshowVilles(false)
         setshowMedecins(true)
     }
+
     const addTicket = (medecin) => {
-        socket.emit('add-tickets',  {medecin, user : user} , (response) => {
+        socket.emit('add-ticket',  {medecin, user : user} , (response) => {
             if(response.error) {
 
             }else{
-                setNumber(response.nombre)
-                setTicket(response.ticket)
+                setTicket(response.ticket);
+                setOnConsulting(true);
             }
           });   
     }
@@ -178,8 +173,7 @@ function Home({pseudo}) {
     }
 
     const sendMessage = (event) => {
-
-        event.preventDefault();
+	event.preventDefault();
         if(message) {
             socket.emit('sendMessage', {message, selectedUser: medecin, user }, (message) => {
                 setMessage(''); 
@@ -187,34 +181,34 @@ function Home({pseudo}) {
              })
         }
     }
-   
+
     
     return (
 
         <div className="page chat_patient">
 	    <Banner title={content.title[lang]} subtitle={!changeBanner ? content.subtitle[lang] : "Vous êtes dans la liste d'attente , patientez s'il vous plaît"} style={{color:'white'}} banner={ContactBanner}  />
-            {
-                ticket.name === user.name ?  
-                <Container>
-                    <Ticket
-                        setMessage={setMessage} 
-                        messages={messages} 
-                        message={message}  
-                        medecin={medecin} 
-                        user={user} 
-                        sendMessage={sendMessage}
-                        socket={socket}
-                        ticket={ticket}
-                        setInCall={setInCall}
-                        setTicket={setTicket}
-                        inCall={inCall}
-                        medecinsOnligne={medecinsOnligne}
-                        setshowVilles={setshowVilles}
-                        nomVille={nomVille}
-                    />
-                </Container>                      
-                
-                :
+           
+           {onConsulting ?
+        <Container>
+            <Ticket
+                setMessage={setMessage} 
+                messages={messages} 
+                message={message}  
+                medecin={medecin} 
+                user={user} 
+                sendMessage={sendMessage}
+                socket={socket}
+                ticket={ticket}
+                setInCall={setInCall}
+                setTicket={setTicket}
+                setOnConsulting={setOnConsulting}
+                inCall={inCall}
+                // medecinsOnligne={medecinsOnligne}
+                setshowVilles={setshowVilles}
+                nomVille={nomVille}
+            />
+        </Container> 
+           :
                 <Container className="mt-5"> 
                 <CSSTransition
                     in={showVilles}
@@ -231,52 +225,42 @@ function Home({pseudo}) {
                         <ListeMedecin setChangeBanner={setChangeBanner} addTicket={addTicket} medecinsOnligne={medecinsOnligne} setshowMedecins={setshowMedecins} setMedecin={setMedecin} ville={ville} setShowVille={setShowVille} />
                 </CSSTransition>
             </Container>
-            }
-           
+            
+        }
         </div>
     )
 }
 
 function Ticket(props){
-    const [ready, setReadys] = useState(false)
-    const [medecinHorsLigne, setMedecinHorsLigne]= useState(false)
     const [idTicket, setIdTicket] = useState(null)
-    const setReady = () => {
-        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"ready", medecin : props.medecin});
-        setReadys(true)
-    }
-    useEffect(() => {
-        let thisMedecin = props.medecinsOnligne.find((med) => med.id === props.medecin.id);
-        if (thisMedecin === undefined){
-            setMedecinHorsLigne(true);
-        }else{
-            if(thisMedecin.state === "disconnected"){
-                setMedecinHorsLigne(true);
-            }else{
-                if (medecinHorsLigne) {
-                    setMedecinHorsLigne(false);
-                }
+    const [medecinHorsLigne, setMedecinHorsLigne]= useState(false);
+
+    useEffect(()=>{
+        props.socket.on("medecin-disconnected", ({ medecinDisconnected, reason }) => {
+            if(medecinDisconnected.id === props.medecin.id){
+                setMedecinHorsLigne(true)
             }
-        }
-    })
+        });
+        props.socket.on("medecin-connected", ({ medecinConnected }) => {
+            if(medecinConnected.id === props.medecin.id){
+                setMedecinHorsLigne(false);
+            }
+        });
+    }, [])
     const saveTicket = () => {
-       Axios.post(`${baseUrl.lumen}api/ticket` , {id_medecin : props.medecin.id, nom_ticket: props.user.id}, {headers: {'Content-Type': 'application/json'}})
+       Axios.post(`${baseUrl.lumen}api/ticket` , {id_medecin : props.medecin.id, nom_ticket: props.ticket.name}, {headers: {'Content-Type': 'application/json'}})
         .then(res => {
             setIdTicket(res.id_appel);
        });
     }
 
     const deleteTicket = () => {
-        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} );
+        props.socket.emit('delete-ticket',  {  medecin: props.medecin, ticket: props.ticket}, () =>{} );
         props.setshowVilles(true)
+        props.setOnConsulting(false);
+        props.setTicket({});
     }
 
-    const finTicket  = (e) => {
-        // e.preventDefault();
-        props.socket.emit('switch-ticket',  { selectedUser : props.user, type:"delete"}, () =>{} );
-        props.setshowVilles(true);
-        // finTicket
-    }
     if( props.inCall === "video" || props.inCall === "audio"){
         return (
             <VideoCall idTicket={idTicket} socket={props.socket} medecin={props.medecin} patient={props.user} type={props.inCall} setInCall={props.setInCall} />
@@ -291,7 +275,7 @@ function Ticket(props){
             </div>
         )
     }
-    else if(props.ticket.status === -1){
+    else if(props.ticket.status === 1){
        return(
         <div>
             <ChatPAtient 
@@ -311,7 +295,8 @@ function Ticket(props){
     else if (props.ticket.status === 0){
         return(
             <div>
-            <h3 className="text-center mt-3"> {content.ticket.Loby.titre[lang]}  </h3>
+            <h3 className="text-center mt-3"> {content.ticket.Loby.titre[lang]}</h3>
+	    <h2 className="heartbeat text-center mt-3">{content.ticket.Loby.danger[lang]}</h2>
             <h5 className="text-center mt-3">{content.ticket.Loby.soustitre[lang]} {props.nomVille}</h5>
             <p className="text-center mt-3"> {content.ticket.Loby.message[lang]} </p>
             <div className="col text-center mt-4 mb-5">
@@ -320,29 +305,7 @@ function Ticket(props){
         </div>
         )
     }
-    else if(props.ticket.status === -2){
-        return(
-         <div>
-             <h3 className="text-center mt-5"> {content.ticket.end[lang]}  </h3>
-             <Feedback finTicket={finTicket} id_ticket ={idTicket} />
-         </div>
-     ) 
- 
-     }
-     else if(props.ticket.status === 1){
-        return(
-         <div className="col text-center">
-           <h3 className="text-center mt-3"> {content.ticket.manquer.titre[lang]}</h3>
-             {!ready ?
-                 <button className="btn btn-primary mt-3" onClick={setReady} > {content.ticket.manquer.button[lang]} </button>
-                 :
-                <div> {content.ticket.manquer.pret[lang]} </div> 
-             }
-         </div>
-     ) 
- 
-     }
-     return null
+   
     
 }
 
@@ -355,7 +318,8 @@ function ListeMedecin(props){
        .then(res => {
            res.data.map((medecin )=>{ 
                let user = props.medecinsOnligne.find((user) => user.id === medecin.id && user.state === "conected")
-               return (user === undefined) ? medecin.onligne= false : medecin.onligne=true
+               medecin.onligne= (user === undefined) ?  false : true
+               medecin.nombreTicket  = (user === undefined) ? 0 : user.nombreTicket
             } )
            setMedecins(res.data)
        })
@@ -367,7 +331,8 @@ function ListeMedecin(props){
         // let newMedecin = medecins
         medecins.map((medecin) => {
             let etat =  props.medecinsOnligne.find((user) => user.id === medecin.id && user.state === "conected" )
-            return (etat === undefined) ? medecin.onligne = false : medecin.onligne= true
+            medecin.onligne = (etat === undefined) ?  false : true
+            medecin.nombreTicket  = (etat === undefined) ? 0 : etat.nombreTicket
         })
         setMedecins([...medecins])
     },[props.medecinsOnligne]);
@@ -406,7 +371,6 @@ function ListeMedecin(props){
 
 
 function MedecinImage(props){
-	
     return(
         <figure  className="effect-apollo">
 	    <img src={props.image} className="w-100"   alt={props.name} />   
@@ -416,9 +380,14 @@ function MedecinImage(props){
     <span>{ props.onligne? content.listemedecin.medecinenligne[lang] : content.listemedecin.medecinhorsligne[lang]}</span>
             </div>
             <p className="p">{props.subtitle}</p>
-            <div className="d-flex flex-column justify-content-end align-items-center h-100">
-                <h3 className="mb-3">{props.name}</h3>
-                
+            
+            <div className="  d-flex flex-column justify-content-end align-items-center h-100">
+                <div className="text-bottom back_white">
+                    <p className="fill text-dark"> patients en attente: <span> {props.medecin.nombreTicket} </span> </p>
+                    <h3 className="mb-2">{props.name}</h3>
+                </div>
+            
+               
             </div> 
         </figcaption>
     </figure>
@@ -515,11 +484,15 @@ let content = {
         },
         Loby:{
             titre : {
-                fr:"Bienvenue au file d'attente",
-                ar:"مرحبًا بك في قائمة الانتظار"
+                fr:"Bienvenue à Pelia.ma",
+                ar:"مرحبًا بك في Pelia.ma"
             },
+	    danger:{
+	    	fr:"Ne quittez pas cette page, restez ici pour ne pas manquer votre tour",
+		ar:"لا تترك هذه الصفحة, ابق هنا حتى لا تفوت دورك"
+	    },
             soustitre : {
-                fr:"Vous êtes maintenant au queue d'attente du médecin de la ville",
+                fr:"Vous êtes maintenant en file d'attente. Veuillez attendre votre tour pour accéder à votre consultation.",
                 ar:"أنت الآن في لائحة انتظار طبيب مدينة "
             },
             message : {

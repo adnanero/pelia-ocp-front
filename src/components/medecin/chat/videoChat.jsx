@@ -37,10 +37,12 @@ export default class ElemenetsCall extends Component {
             }
         })
         socket.on('signal-call', ({data}) => {
-            this.setUpPeer({data})
+            let peer = this.setUpPeer({data});
+            peer.signal(data);
         })
         
         socket.on('ready-patient', (response) => {
+            
             if(this.props.type === "video"){
                 socket.emit('client-call', {selectedUser: this.state.patient,})
                 this.setState({callFrom: this.state.patient.name, hisOnline: true});
@@ -84,6 +86,7 @@ export default class ElemenetsCall extends Component {
         });
 
         peer.on('signal', (data) => {
+
             this.props.socket.emit('medecin-confirm-call', {selectedUser: this.state.patient, data})
         })
         
@@ -113,7 +116,7 @@ export default class ElemenetsCall extends Component {
             }
         })
         this.setState({responding: true, peer})
-        peer.signal(data);
+        return peer;
     }
  
 
@@ -196,10 +199,10 @@ export default class ElemenetsCall extends Component {
                     <Row className={!passingCall ? "responding process": "responding"}>   
                         <Col style={{paddingLeft:0}}>
                         <Row className="text-center justify-content-around banner-call">  
-                    <div>
-                        <img src={LogoPng} width="20%" alt="pelia logo" /> 
-                    </div> 
-                </Row> 
+                        <div>
+                            <img src={LogoPng} width="20%" alt="pelia logo" /> 
+                        </div> 
+                    </Row> 
                             <div className="layer"></div>
                             { !passingCall &&                      
                                 <Row className="text-center d-flex justify-content-around w-100 p-4 ml-1 mt-5">   

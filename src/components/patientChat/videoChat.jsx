@@ -25,11 +25,14 @@ export default class ElemenetsCall extends Component {
             stream: null,
             isCalling:false,
             medecin: props.medecin,
-            patient: props.patient
+            patient: props.patient,
+		showGreenButton: false
         };
     }
     componentDidMount() {
-      
+      	setTimeout(()=>{
+		this.setState({showGreenButton : true})
+	},5000)
         if(this.props.type === "video"){
             this.initiatorCallVideo()
         }else{
@@ -41,7 +44,6 @@ export default class ElemenetsCall extends Component {
         this.props.socket.removeAllListeners('patient-signal-call')
         this.props.socket.removeAllListeners('patient-call')
         this.props.socket.removeAllListeners('reject-call-patient')
-        this.props.socket.removeAllListeners('reject-call-patient')
 
         if(this.state.peer){
             this.state.peer.destroy();
@@ -52,7 +54,9 @@ export default class ElemenetsCall extends Component {
         socket.emit('patient-ready', {selectedUser: this.state.medecin} )
         
         socket.on('patient-call', (response) => {
-            this.setState({ isCalling: true});
+            // setTimeout(()=> {
+		this.setState({ isCalling: true});
+	    // },3000);
         })
         socket.on('reject-call-patient', (response) => {
             let duree = Date.now() - this.state.timeAppel;
@@ -84,6 +88,7 @@ export default class ElemenetsCall extends Component {
                         } catch (e) {
                             this.myVideo.src = URL.createObjectURL(videoStream)
                         }
+			this.myVideo.play();
                         try {
                             this.callerTone.src = callerTone
                         } catch (e) {
@@ -92,7 +97,7 @@ export default class ElemenetsCall extends Component {
                         this.callerTone.play();
                 })
                 .catch(err => {
-                    console.log(`Unable to fetch stream`)
+                    console.log(err);
                 })
     }
 
@@ -226,18 +231,20 @@ export default class ElemenetsCall extends Component {
                                         Icon={<FaPhoneSlash size="1.5rem" />}
                                     />
                                         
-                                { !passingCall &&
+                                { (!passingCall && this.state.showGreenButton) ?
                                     <ButtonProcess 
                                         className="action" 
                                         onClick={this.confirmCall} 
-                                        type="button"   
+                                        type="button" 
                                         variant="success" 
                                         success={false} 
                                         valeur="" 
                                         sending={respondingProcess} 
                                         IconSuccess={FaCheck} 
                                         Icon={<FaPhone size="1.5rem" />}
-                                    />
+                                   />:null
+
+
                                 }
                             </Row>
                         </Col>
@@ -258,7 +265,7 @@ function ButtonProcess(props) {
         position: 'relative',
       }}>
         <Button
-        onClick={props.onClick}
+        onClick={props.onClick }
         className={props.className}
           type={props.type}
           variant= {props.variant}
@@ -267,7 +274,7 @@ function ButtonProcess(props) {
           {props.valeur}
           {props.success ? <props.IconSuccess /> : props.Icon }
         </Button>
-        {props.sending && <CircularProgress size={24} style={ {color: "#8dc63f", position: 'absolute',top: '50%', left: '50%',marginTop: -12,marginLeft: -12}}  />}
+        {props.sending && <CircularProgress size={24} style={ {color: "#8dc63f", position: 'absolute',top: '50%', left: '50%',marginTop: -12,marginLeft: -12}}  /> }
       </div>
   );
 }

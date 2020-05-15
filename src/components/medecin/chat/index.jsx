@@ -25,20 +25,21 @@ const MedecinChat = () =>{
 
 }
 
-const Chat = ({ville}) => {
+const Chat = () => {
 
   const [user, setUser ] = useState({name: '', id:''});
   const [selectedUser, setSelectedUser] = useState("");
   const [tickets, setTickets] = useState([]);
+  const [ticket, selectedTicket] = useState({})
   const [onConsuting, setConsulting] = useState(false);
   const [resolved, setResolved] = useState(0);
   const [nmbr_ticket, setNombreTicket] = useState("")
 
   const [inCall, setInCall] = useState(false)
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [showConversation, setShowConversation] = useState(false);
-
+  
   const ENDPOINT = baseUrl.node;
   useEffect(() => {
     socket = io(ENDPOINT+"packtchat");
@@ -47,7 +48,7 @@ const Chat = ({ville}) => {
       userAuth = JSON.parse(Cookies.get('user'));
     };
     
-    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom, ville ,  id: userAuth.id, sexe: userAuth.sexe, type: "medecin"};
+    let userSocket = {name: userAuth.nom + userAuth.prenom , nom:userAuth.nom, prenom: userAuth.prenom , ville: userAuth.id_ville ,  id: userAuth.id, sexe: userAuth.sexe, type: "medecin"};
     setUser(userSocket)
 
     socket.emit('join',  userSocket , (response) => {
@@ -55,7 +56,7 @@ const Chat = ({ville}) => {
         alert(response.message);
       }else{
         setTickets(response.tickets)
-        let index = response.tickets.findIndex((user) => ( user.status === -1)) 
+        let index = response.tickets.findIndex((user) => ( user.status === 1)) 
         // console.log(index);
         if(index !== -1){
           setSelectedUser(index);
@@ -86,35 +87,32 @@ const Chat = ({ville}) => {
   }, [ENDPOINT]);
   
 const passingConsulting = () => {
-  // let index = tickets.findIndex((user) =>  user.status === 1)
-  let index = tickets.findIndex((user) => (user.status === 0 || user.status === -1) && user.state === "conected"  ) 
+  let index = tickets.findIndex((ticket) => (ticket.status === 0 || ticket.status === 1)) 
   setSelectedUser(index);
-
+  selectedTicket(tickets[index])
    setConsulting(true)
-   socket.emit('switch-ticket',  { selectedUser : index, type:"debut", medecin : user} , (response) => {
-    
+   socket.emit('open-ticket',  { ticket:tickets[index], medecin : user} , (response) => {
     if(!response.error){
-      if(response.tickets === undefined){
-        response.tickets = []
-      }
       setTickets(response.tickets)
+    }else{
+      console.log(response.message)
     }
   });
+  
 }
 
   const finishingConsult = () => {
-
-    socket.emit('switch-ticket',  {selectedUser : selectedUser, type:"fin", medecin : user} , (response) => {
+    socket.emit('close-ticket',  {ticket, medecin : user} , (response) => {
       if(!response.error){
         if(response.tickets === undefined){
           response.tickets = []
         }
         setMessages([])
         setTickets(response.tickets)
-        // setT
         setSelectedUser("")
       }
     });
+
   }
 
   const metVeille = () => {

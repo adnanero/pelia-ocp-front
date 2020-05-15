@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useEffect } from 'react';
 
-const TextContainer = ({ tickets,metVeille,passingConsulting, finishingConsult, resolved, setConsulting,nmbr_ticket, setNombreTicket, onConsuting }) => {
+const TextContainer = ({ tickets,passingConsulting, finishingConsult, resolved, setConsulting,nmbr_ticket, setNombreTicket, onConsuting }) => {
   
   useEffect (() =>{
     
@@ -24,10 +24,7 @@ const TextContainer = ({ tickets,metVeille,passingConsulting, finishingConsult, 
     setConsulting(false)
     finishingConsult()
   }
-  const attenteTicket = () => {
-    setConsulting(false)
-    metVeille()
-  }
+
 return(
   <div className="sidepanel">
      
@@ -44,7 +41,7 @@ return(
       </div>
       :
       <div className="tickets d-flex active text-center col">
-        <h5 className="text-center"> Vous n'avez encore aucun patient sur votre liste </h5>
+        <h5 className="text-center"> Vous n'avez pas de patient en file d'attente pour le moment. </h5>
          
       </div>
       }
@@ -53,7 +50,6 @@ return(
             onConsuting &&
             <div className="action-consulting col text-center align-items-center">
               <button className="btn btn-primary" onClick={ finTicket }>Fermer le ticket</button>
-		      {/*<button className="btn btn-primary" onClick={ attenteTicket }>Mettre en attente</button>*/}
             </div>
           }
     

@@ -21,11 +21,11 @@ const InfoBar = ({ user, resolved, titre, audioCall, videoCall, onConsuting, res
      
       
     </div>
-    {user.type === "medecin" &&
+    {/* {user.type === "medecin" &&
     <div className="centerInnerContainer">
         <h4 className="text-white d-none"> {(resolved === 0) ? "vous n'avez fait aucune consultation aujourd'hui" : "la consultation numéro " + resolved + " aujourd'hui" }  </h4>
     </div>
-    }
+    } */}
     {user.type === "medecin" && onConsuting &&
     <div className="rightInnerContainer">
         <div className="video-call m-0">
