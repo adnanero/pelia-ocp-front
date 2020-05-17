@@ -32,7 +32,7 @@ return(
       <div className="tickets-infos">
       { nmbr_ticket ?
       <div>
-        <h5 className="text-center"> Vous avez ecore : {nmbr_ticket} patients en attente </h5><br />
+        <h5 className="text-center"> Vous avez ecore : {nmbr_ticket} patient(s) en attente </h5><br />
           { !onConsuting && nmbr_ticket > 0 &&
             <div className="col text-center"> 
             <button className="btn btn-primary mt-5" onClick={ passingConsulting }>Diagnostiquer le prochain patient</button>

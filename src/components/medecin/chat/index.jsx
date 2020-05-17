@@ -164,7 +164,7 @@ const passingConsulting = () => {
         <Row className="justify-content-around ">
           <Col lg="10" className = "bg-white p-0 discussion-container">
             
-          <InfoBar resolved={resolved} medecinImage={user.sexe == 0 ? medecine : medecineFemme} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? ( tickets[selectedUser]["pseudo"]) : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
+          <InfoBar resolved={resolved} medecinImage={user.sexe == 0 ? medecine : medecineFemme} selectedUser={tickets[selectedUser]} titre={(tickets[selectedUser]) ? ( tickets[selectedUser]["pseudo"]) : "aucun ticket ouvert"} videoCall={videoCall} audioCall={audioCall} showConversationHandler={showConversationHandler}  onConsuting={onConsuting} user={user} chatIcon={true} showConversation={showConversation} />
           <Row className="discussion m-0">        
       {(onConsuting && showConversation) ?
         <Col lg="8" className="chat-messages p-0">
@@ -208,7 +208,7 @@ const passingConsulting = () => {
          <Row className="justify-content-around ">
            <Col lg="10" className = "bg-white p-0 discussion-container">
            
-           <InfoBar resolved={resolved} medecinImage={user.sexe == 0 ? medecine : medecineFemme} selectedUser={tickets[selectedUser]} titre={ (tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucune ticket ouvert"} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
+           <InfoBar resolved={resolved} medecinImage={user.sexe == 0 ? medecine : medecineFemme} selectedUser={tickets[selectedUser]} titre={ (tickets[selectedUser]) ? tickets[selectedUser]["pseudo"] : "aucun ticket ouvert"} videoCall={videoCall} audioCall={audioCall} onConsuting={onConsuting} user={user} chatIcon={false}  />
           <Row className="discussion m-0">
           <Col lg="4" className="p-0">
           <UsersOnline

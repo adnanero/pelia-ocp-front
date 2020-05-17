@@ -166,7 +166,7 @@ let content = {
         title:{fr:"Une équipe pluridisciplinaire",ar:"فريق متعدد التخصصات"},
         body:[
             {
-                fr:"Pelia.ma est une plateforme de téléconsultation, par une équipe de 4 personnes. Chaqu'un d'entre nous est issu d'une origine et background différent ce qui donne la force à notre équipe dans tous les domaines nécessaires pour la proposition de solutions parfaitement adaptées à vos besoins et pour faciliter vos tâches de la vie quotidienne.",
+                fr:"Pelia.ma est une plateforme de téléconsultation, développée par une équipe de 4 personnes. Chaqu'un d'entre nous est issu d'une origine et background différent ce qui donne la force à notre équipe dans tous les domaines nécessaires pour la proposition de solutions parfaitement adaptées à vos besoins et pour faciliter vos tâches de la vie quotidienne.",
                 ar:"Pelia.ma هي منصة للإستشارة عن بعد ، من إنشاء فريق من 4 أشخاص. يأتي كل منا من أصل وخلفية مختلفة مما يعطي القوة لفريقنا في جميع المجالات اللازمة لاقتراح حلول مناسبة تمامًا لاحتياجاتك ولتيسير مهامك في الحياة اليومية."
             }
         ]

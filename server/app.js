@@ -8,7 +8,6 @@ const app = express();
 const path = require('path');
 
 const bodyParser = require('body-parser');
-const chat = require('./routes/chat');
 const upload = require('./routes/upload');
 
 const http = require('http');
@@ -34,7 +33,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
-app.use(chat)
 app.use(upload)
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -42,11 +40,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 const { startIo }= require('./controllers/ChatController')
 startIo(server)
 
-connection.sync()
-          .then(result => {
-            server.listen(process.env.PORT || 4300, () => console.log(`Server has started.`));
-            //   app.listen(4300, () => console.log('Server ON'))
-          })
-          .catch((err) => {
-              console.log('error: ', err)
-          })
+server.listen(process.env.PORT || 4300, () => console.log(`Server has started.`));
+// connection.sync()
+//           .then(result => {
+            
+//             //   app.listen(4300, () => console.log('Server ON'))
+//           })
+//           .catch((err) => {
+//               console.log('error: ', err)
+//           })

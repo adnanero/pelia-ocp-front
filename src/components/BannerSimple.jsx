@@ -16,9 +16,9 @@ export default function BannerSimple(props) {
                             >
                             {props.title} 
                             </h1>
-                            <h2 data-wow-duration="700ms" data-wow-delay="500ms" 
+                            <h2 dangerouslySetInnerHTML={{__html:props.subtitle}} data-wow-duration="700ms" data-wow-delay="500ms" 
                                 className="wow bounceInUp animated"  style={props.style}>
-                                    {props.subtitle} 
+                                   
                             </h2>
                     </div>
                 </Row>

@@ -130,21 +130,18 @@ module.exports.removeUser = (socket_id) => {
   }
 }
 
-module.exports.getNumber = ({ medecin}) =>{
-  let ticketMedecin = tickets[medecin.id];
-  let count= 0;
-  ticketMedecin = (ticketMedecin === undefined) ? [] : ticketMedecin;
-  ticketMedecin.forEach(ticketVerify => {
-    if(ticketVerify.status === 0 || ticketVerify.status === 1){
-      count++;
-    }
-  });
-
-  return count
-}
-
-module.exports.getMedecinsOnligne = () =>{
-  return medecins
+module.exports.getTicketsThisMedecin = (id, userId) =>{
+  let ticketsMedecib = tickets[id];
+  if(!ticketsMedecib) return {error: true, message: "aucune ticket pour ce médecin"}
+  let count = 0;
+  for( let i = 0; ticketsMedecib.length-1; i++) {
+    if(ticketsMedecib[i] === undefined)
+      break;
+    if(ticketsMedecib[i]["id"] === userId )
+      break;
+  count++;
+  }
+   return {count, error: false}
 }
 
 

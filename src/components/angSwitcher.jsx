@@ -15,7 +15,7 @@ export default function angSwitcher(props) {
         <div className="switch-lang"> 
         <div style={{direction:"rtl" , textAlign:"right"}} className="current-lang selecting-lang">
             <img className="lang-flag mx-2" src="https://img.icons8.com/color/48/000000/morocco-circular.png" alt="arab"/>
-            <p style={{direction:"rtl", textAlign:"right"}} className="lang-text">عربي</p>
+            <p style={{direction:"rtl", textAlign:"right"}} className="lang-text"> العربية </p>
         </div>
         <div className="lang-dropdown">
             <div className="selecting-lang" id="fr" onClick={switchLang}>
@@ -34,7 +34,7 @@ export default function angSwitcher(props) {
                 <div style={{direction:"rtl" , textAlign:"right"}} className="lang-dropdown">
                     <div className="selecting-lang" id="ar" onClick={switchLang}>
                         <img className="lang-flag mx-2" src="https://img.icons8.com/color/48/000000/morocco-circular.png" alt="arab"/>
-                        <p className="lang-text">عربي</p>
+                        <p className="lang-text"> العربية </p>
                     </div>
 
                 </div>

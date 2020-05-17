@@ -27,6 +27,13 @@ const socketio = require('socket.io');
           
         });
 
+        socket.on('tickets-medecin', ({idMedecin, userId}, callback) => {
+          if(!idMedecin || !userId) return callback({error: true, message:"vous n'avez envoyer aucune information au serveur"});
+          const {count, error, message} = UsersController.getTicketsThisMedecin(idMedecin, userId );
+          if(error) return callback({error: true, message:message})
+          callback({error: false, count});
+        }); 
+
         socket.on('add-ticket', ({medecin, user}, callback) => {
           if(!medecin || !user) return callback({error: true, message:"vous n'avez znvoyer aucune information auserveur"});
           const { error, message, tickets, ticket } = UsersController.addTicket({ medecin, user });
@@ -98,6 +105,7 @@ const socketio = require('socket.io');
           if(!error){
             let medecinsOnligne = UsersController.medecinsNumber();
             packtchat.emit('medecins-changed', {medecinsOnligne});
+
             if(type == "medecin"){
               packtchat.emit('medecin-disconnected', { medecinDisconnected: user, reason });
           }else{
@@ -106,6 +114,9 @@ const socketio = require('socket.io');
           }
         })
     // });
+	socket.on('on-blur-patient', (userSocket) => {
+        	 console.log(userSocket)
+        })
       
 }
 var socketAuth = function socketAuth(socket, next){
@@ -123,3 +134,4 @@ exports.startIo =(server) => {
   
   return io;
 };
+
